@@ -40,9 +40,11 @@ void gui_welcome_page_enter()
     lv_img_set_src(img_welcome, &img_welcome_logo);
     lv_obj_t *label_welcome = lv_label_create(cont_welcome_label, NULL);
     LV_FONT_DECLARE(font_chinese);
-    lv_style_t *style_chinese = lv_label_get_style(label_welcome, LV_LABEL_STYLE_MAIN);
-    style_chinese->text.font = &font_chinese;
-    lv_label_set_style(label_welcome, LV_LABEL_STYLE_MAIN, style_chinese);
+    static lv_style_t style_chinese;
+    lv_style_t *style_temp = lv_label_get_style(label_welcome, LV_LABEL_STYLE_MAIN);
+    lv_style_copy(&style_chinese, style_temp);
+    style_chinese.text.font = &font_chinese;
+    lv_label_set_style(label_welcome, LV_LABEL_STYLE_MAIN, &style_chinese);
     lv_label_set_text(label_welcome, "鸽子数控电源");
 
     update_obj_welcome.progress_bar = lv_bar_create(update_obj_welcome.backgroud, NULL);

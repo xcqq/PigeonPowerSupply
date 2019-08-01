@@ -40,11 +40,18 @@ struct s_gui_status
     uint16_t set_volt;
     uint16_t real_current;
     uint16_t real_volt;
+    uint16_t output_power;
+    uint16_t output_resistor;
     uint8_t output_enable;
 
     lv_obj_t *gui_cont_top_bar;
     lv_obj_t *gui_label_top_status;
 };
+
+#define GUI_KEY_START           KEY_4
+#define GUI_KEY_SWITCH_CANCEL   KEY_3
+#define GUI_KEY_RIGHT_PLUS      KEY_2
+#define GUI_KEY_LEFT_MINUS      KEY_1
 
 extern struct s_gui_status gui_status;
 

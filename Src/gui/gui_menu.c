@@ -27,6 +27,7 @@ void gui_menu_list_cb(lv_obj_t * obj, lv_event_t event)
                 gui_status.gui_page = GUI_PAGE_OUTPUT;
                 break;
             default:
+                gui_status.gui_page = GUI_PAGE_OUTPUT;
                 break;
         }
         lv_obj_del(update_obj_menu.cont_backgroud);
