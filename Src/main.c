@@ -7,6 +7,7 @@
 #include "font.h"
 #include "key.h"
 #include "gui.h"
+#include "pwmda.h"
 
 osThreadId defaultTaskHandle;
 osThreadId GUITaskHandle;
@@ -24,6 +25,7 @@ int main(void)
     led_init();
     encoder_init();
     key_init();
+    pwmda_init();
 
     osThreadDef(GUITask, gui_refresh_task, osPriorityNormal, 0, 512);
 

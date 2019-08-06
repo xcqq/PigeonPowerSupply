@@ -43,6 +43,7 @@ Src/led.c \
 Src/lcd.c \
 Src/key.c \
 Src/img.c \
+Src/pwmda.c \
 Src/freertos.c \
 Src/stm32f4xx_it.c \
 Src/stm32f4xx_hal_msp.c \
