@@ -1,0 +1,5 @@
+.pio
+.vscode
+.vscode-ctags
+.DS_Store
+*.eez-project-ui-state
