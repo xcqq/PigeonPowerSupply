@@ -23,6 +23,7 @@ void action_update_power_module_status(lv_event_t *e)
     static struct power_module_settings power_settings;
     static int last_button;
     static TickType_t last_button_time = 0;
+    struct hmi_module_settings hmi_settings = {0};
 
     hmi_status = io.get_hmi_module_status();
 
@@ -102,6 +103,11 @@ void action_update_power_module_status(lv_event_t *e)
                 vs_sel_flag = !vs_sel_flag;
                 flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_VC_SEL_FLAG,
                                         IntegerValue(vs_sel_flag));
+                if (vs_sel_flag)
+                    hmi_settings.led_1 = true;
+                else
+                    hmi_settings.led_2 = true;
+                io.set_hmi_module_status(hmi_settings);
                 break;
             default:
                 break;
@@ -110,9 +116,13 @@ void action_update_power_module_status(lv_event_t *e)
             switch (last_button) {
             case 1:
                 flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_VC_SEL_FLAG, IntegerValue(1));
+                hmi_settings.led_1 = true;
+                io.set_hmi_module_status(hmi_settings);
                 break;
             case 2:
                 flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_VC_SEL_FLAG, IntegerValue(0));
+                hmi_settings.led_2 = true;
+                io.set_hmi_module_status(hmi_settings);
                 break;
             case 3:
                 set_step = flow::getGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_STEP).getInt();

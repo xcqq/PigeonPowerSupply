@@ -29,13 +29,20 @@ struct hmi_module_status {
     int32_t encoder_inc;
 };
 
+struct hmi_module_settings {
+    bool led_1;
+    bool led_2;
+};
+
 class io_service
 {
 private:
     struct power_module_status _power_module_status;
     struct hmi_module_status _hmi_module_status;
     struct power_module_settings _power_module_settings;
+    struct hmi_module_settings _hmi_module_settings;
     bool _hmi_reset_flag = false;
+    bool _hmi_set_flag = false;
     bool _power_set_flag = false;
     M5ModulePPS _pps;
     MODULE_HMI _hmi;
@@ -52,5 +59,6 @@ public:
   struct power_module_status get_power_module_status() { return _power_module_status; }
   void set_power_module_status(struct power_module_settings);
   struct hmi_module_status get_hmi_module_status();
+  void set_hmi_module_status(struct hmi_module_settings);
 };
 #endif

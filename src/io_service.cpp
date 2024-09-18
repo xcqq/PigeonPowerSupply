@@ -41,6 +41,11 @@ void IRAM_ATTR io_service::hmi_module_sync(void) {
     _hmi_module_status.button_2 = _hmi.getButton2();
     _hmi_module_status.button_s = _hmi.getButtonS();
     _hmi_module_status.encoder_inc_raw += encoder_inc;
+    if(_hmi_set_flag){
+        _hmi.setLEDStatus(0, _hmi_module_settings.led_1);
+        _hmi.setLEDStatus(1, _hmi_module_settings.led_2);
+        _hmi_set_flag = false;
+    }
 #ifdef _DEBUG_
     Serial.printf("Power module sync:\n");
     Serial.printf("btn1:%d btn2:%d btns:%d\n", _hmi_module_status.button_1,
@@ -60,6 +65,11 @@ struct hmi_module_status IRAM_ATTR io_service::get_hmi_module_status(void) {
 void IRAM_ATTR io_service::set_power_module_status(struct power_module_settings settings) {
     _power_module_settings = settings;
     _power_set_flag = true;
+}
+
+void IRAM_ATTR io_service::set_hmi_module_status(struct hmi_module_settings settings){
+    _hmi_module_settings = settings;
+    _hmi_set_flag = true;
 }
 
 void ICACHE_FLASH_ATTR io_service::setup()
