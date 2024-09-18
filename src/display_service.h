@@ -2,7 +2,7 @@
 #define DISPLAY_SERVICE_H
 
 #include "lvgl.h"
-#include "TFT_eSPI.h"
+#include "M5Stack.h"
 
 class display_service
 {

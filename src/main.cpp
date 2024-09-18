@@ -29,7 +29,7 @@ RST:D23
 */
 
 #include <Arduino.h>
-// #include "M5Stack.h"
+#include "M5Stack.h"
 #include "M5Module-PPS/M5ModulePPS.h"
 #include "soc/timer_group_struct.h"  //for wdt
 #include "soc/timer_group_reg.h"     //for wdt
@@ -79,6 +79,7 @@ void setup_cpu1(void *pvParameters){
 }
 void setup()
 {
+    M5.begin();
 
     xTaskCreatePinnedToCore(
                     setup_cpu0,   /* Task function. */
