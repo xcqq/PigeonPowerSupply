@@ -95,6 +95,16 @@ static void event_handler_cb_home_page_obj1(lv_event_t *e) {
     void *flowState = e->user_data;
 }
 
+static void event_handler_cb_home_page_obj2(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = e->user_data;
+}
+
+static void event_handler_cb_home_page_obj3(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = e->user_data;
+}
+
 void create_screen_home_page() {
     void *flowState = getFlowState(0, 0);
     lv_obj_t *obj = lv_obj_create(0);
@@ -267,6 +277,26 @@ void create_screen_home_page() {
             lv_line_set_points(obj, line_points, 2);
             lv_obj_set_pos(obj, 111, 49);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+        }
+        {
+            lv_obj_t *obj = lv_bar_create(parent_obj);
+            objects.obj2 = obj;
+            lv_obj_set_pos(obj, 120, 123);
+            lv_obj_set_size(obj, 160, 4);
+            lv_obj_add_event_cb(obj, event_handler_cb_home_page_obj2, LV_EVENT_ALL, flowState);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xff2196f3), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(0xffff3b30), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(0xffff3b30), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+        }
+        {
+            lv_obj_t *obj = lv_bar_create(parent_obj);
+            objects.obj3 = obj;
+            lv_obj_set_pos(obj, 120, 190);
+            lv_obj_set_size(obj, 160, 4);
+            lv_obj_add_event_cb(obj, event_handler_cb_home_page_obj3, LV_EVENT_ALL, flowState);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xff34c759), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(0xff34c759), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(0xff34c759), LV_PART_INDICATOR | LV_STATE_DEFAULT);
         }
     }
 }
@@ -470,6 +500,24 @@ void tick_screen_home_page() {
         if (strcmp(new_val, cur_val) != 0) {
             tick_value_change_obj = objects.obj1;
             lv_label_set_text(objects.obj1, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = evalIntegerProperty(flowState, 16, 3, "Failed to evaluate Value in Bar widget");
+        int32_t cur_val = lv_bar_get_value(objects.obj2);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.obj2;
+            lv_bar_set_value(objects.obj2, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = evalIntegerProperty(flowState, 17, 3, "Failed to evaluate Value in Bar widget");
+        int32_t cur_val = lv_bar_get_value(objects.obj3);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.obj3;
+            lv_bar_set_value(objects.obj3, new_val, LV_ANIM_ON);
             tick_value_change_obj = NULL;
         }
     }

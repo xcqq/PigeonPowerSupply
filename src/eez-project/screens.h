@@ -11,6 +11,8 @@ typedef struct _objects_t {
     lv_obj_t *home_page;
     lv_obj_t *obj0;
     lv_obj_t *obj1;
+    lv_obj_t *obj2;
+    lv_obj_t *obj3;
     lv_obj_t *outa_text_label;
     lv_obj_t *outc_num_label;
     lv_obj_t *outv_num_label;
