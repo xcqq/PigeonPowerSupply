@@ -72,6 +72,13 @@ void IRAM_ATTR io_service::set_hmi_module_status(struct hmi_module_settings sett
     _hmi_set_flag = true;
 }
 
+const uint16_t io_service::_beep_tone[3] = {4000, 6000, 8000};
+const uint16_t io_service::_beep_duration[3] = {15, 100, 500};
+
+void io_service::set_buzzer_beep(enum buzzer_tone tone, enum buzzer_duration duration) {
+    M5.Speaker.tone(_beep_tone[tone], _beep_duration[duration]);
+}
+
 void ICACHE_FLASH_ATTR io_service::setup()
 {
     Serial.begin(115200);

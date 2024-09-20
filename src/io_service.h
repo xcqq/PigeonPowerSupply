@@ -34,9 +34,24 @@ struct hmi_module_settings {
     bool led_2;
 };
 
+enum buzzer_tone {
+    BUZZER_TONE_LOW = 0,
+    BUZZER_TONE_MID,
+    BUZZER_TONE_HIGH,
+};
+
+enum buzzer_duration {
+    BUZZER_DURATION_SHORT = 0,
+    BUZZER_DURATION_MID,
+    BUZZER_DURATION_LONG,
+};
+
 class io_service
 {
 private:
+    static const uint16_t _beep_tone[3];
+    static const uint16_t _beep_duration[3];
+
     struct power_module_status _power_module_status;
     struct hmi_module_status _hmi_module_status;
     struct power_module_settings _power_module_settings;
@@ -49,8 +64,7 @@ private:
     void power_module_sync(void);
     void hmi_module_sync(void);
 
-public:
-  io_service();
+public : io_service();
   ~io_service();
 
 
@@ -60,5 +74,6 @@ public:
   void set_power_module_status(struct power_module_settings);
   struct hmi_module_status get_hmi_module_status();
   void set_hmi_module_status(struct hmi_module_settings);
+  void set_buzzer_beep(enum buzzer_tone tone, enum buzzer_duration duration);
 };
 #endif

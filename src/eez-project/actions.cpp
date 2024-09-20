@@ -47,6 +47,7 @@ void action_update_power_module_status(lv_event_t *e)
         power_settings.set_volt = set_volt / 1000.0;
         power_settings.set_curr = set_curr / 1000.0;
         io.set_power_module_status(power_settings);
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
     }
 
     if (!hmi_status.button_1) {
@@ -96,6 +97,7 @@ void action_update_power_module_status(lv_event_t *e)
             case 6:
                 power_settings.enable_flag = !power_settings.enable_flag;
                 io.set_power_module_status(power_settings);
+                io.set_buzzer_beep(BUZZER_TONE_MID, BUZZER_DURATION_MID);
                 break;
             case 4:
             case 5:
@@ -108,7 +110,8 @@ void action_update_power_module_status(lv_event_t *e)
                 else
                     hmi_settings.led_2 = true;
                 io.set_hmi_module_status(hmi_settings);
-                break;
+                io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
+                    break;
             default:
                 break;
             }
@@ -118,11 +121,13 @@ void action_update_power_module_status(lv_event_t *e)
                 flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_VC_SEL_FLAG, IntegerValue(1));
                 hmi_settings.led_1 = true;
                 io.set_hmi_module_status(hmi_settings);
+                io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
                 break;
             case 2:
                 flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_VC_SEL_FLAG, IntegerValue(0));
                 hmi_settings.led_2 = true;
                 io.set_hmi_module_status(hmi_settings);
+                io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
                 break;
             case 3:
                 set_step = flow::getGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_STEP).getInt();
@@ -130,6 +135,7 @@ void action_update_power_module_status(lv_event_t *e)
                 if (set_step > 1000) set_step = 1;
                 flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_STEP, IntegerValue(set_step));
                 io.set_power_module_status(power_settings);
+                io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
                 break;
             case 4:
                 set_step = flow::getGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_STEP).getInt();
@@ -148,6 +154,7 @@ void action_update_power_module_status(lv_event_t *e)
                 power_settings.set_volt = set_volt / 1000.0;
                 power_settings.set_curr = set_curr / 1000.0;
                 io.set_power_module_status(power_settings);
+                io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
                 break;
             case 5:
                 set_step = flow::getGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_STEP).getInt();
@@ -166,6 +173,7 @@ void action_update_power_module_status(lv_event_t *e)
                 power_settings.set_volt = set_volt / 1000.0;
                 power_settings.set_curr = set_curr / 1000.0;
                 io.set_power_module_status(power_settings);
+                io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
                 break;
             case 6:
                 set_step = flow::getGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_STEP).getInt();
@@ -173,6 +181,7 @@ void action_update_power_module_status(lv_event_t *e)
                 if (set_step > 1000) set_step = 1;
                 flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_STEP, IntegerValue(set_step));
                 io.set_power_module_status(power_settings);
+                io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
                 break;
 
             default:
