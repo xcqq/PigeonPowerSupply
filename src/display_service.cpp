@@ -51,7 +51,7 @@ void ICACHE_FLASH_ATTR display_service::keypad_setup()
 }
 #endif
 
-static void lv_tick_task() { lv_tick_inc(portTICK_PERIOD_MS); }
+static void IRAM_ATTR lv_tick_task(TimerHandle_t xTimer) { lv_tick_inc(portTICK_PERIOD_MS); }
 
 void ICACHE_FLASH_ATTR display_service::lv_setup()
 {
@@ -82,8 +82,16 @@ void ICACHE_FLASH_ATTR display_service::lv_setup()
 void ICACHE_FLASH_ATTR display_service::setup()
 {
     lv_setup();
+    TimerHandle_t timer = xTimerCreate("lv_tick_task", pdMS_TO_TICKS(1), pdTRUE, NULL, lv_tick_task);
+    if (timer == NULL) {
+        Serial.println("Timer creation failed!");
+        return;
+    }
 
-    esp_register_freertos_tick_hook(lv_tick_task);
+    if (xTimerStart(timer, 0) != pdPASS) {
+        Serial.println("Timer start failed!");
+        return;
+    }
 
 #ifdef _DEBUG_
     Serial.print(F("[INFO] Display GUI setup finished! \n"));
