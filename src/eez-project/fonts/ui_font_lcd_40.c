@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Size: 40 px
  * Bpp: 8
- * Opts: --user-data-dir=/Users/xczhang/Library/Application Support/eezstudio --app-path=/Applications/EEZ Studio.app/Contents/Resources/app.asar --no-sandbox --no-zygote --node-integration-in-worker --lang=zh-CN --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1726346829551826 --launch-time-ticks=232410675802 --shared-files --field-trial-handle=1718379636,r,3096376243392545519,5127449384929056755,262144 --enable-features=kWebSQLAccess --disable-features=SpareRendererForSitePerProcess --variations-seed-version
+ * Opts: --user-data-dir=C:\Users\xczha\AppData\Roaming\eezstudio --app-path=C:\Users\xczha\AppData\Local\Programs\eezstudio\resources\app.asar --no-sandbox --no-zygote --node-integration-in-worker --video-capture-use-gpu-memory-buffer --lang=zh-CN --device-scale-factor=1.5 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --time-ticks-at-unix-epoch=-1730206751276061 --launch-time-ticks=8194502712 --field-trial-handle=3388,i,2337192714540718787,6286084712099037332,262144 --disable-features=SpareRendererForSitePerProcess,WinDelaySpellcheckServiceInit,WinRetrieveSuggestionsOnlyOnDemand --variations-seed-version --mojo-platform-channel-handle=3332 /prefetch:1
  ******************************************************************************/
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE
