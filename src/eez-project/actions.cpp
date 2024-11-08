@@ -15,12 +15,23 @@ enum key_state { KEY_PRESSING, KEY_PRESSED, KEY_LONG_PRESSED, KEY_RELEASED };
 #define SET_CURR_MAX 5000
 #define SET_VOLT_MAX 30000
 
-void action_update_power_module_status(lv_event_t *e)
+extern io_service io;
+struct power_module_settings power_settings;
+
+void IRAM_ATTR action_init_power_module_status(lv_event_t *e)
 {
-    extern io_service io;
+    struct power_module_status power_status;
+
+    power_status = io.get_power_module_status();
+    power_settings.set_curr = power_status.set_curr;
+    power_settings.set_volt = power_status.set_volt;
+    io.set_power_module_status(power_settings);
+}
+
+void IRAM_ATTR action_update_power_module_status(lv_event_t *e)
+{
     struct power_module_status power_status;
     struct hmi_module_status hmi_status;
-    static struct power_module_settings power_settings;
     static int last_button;
     static TickType_t last_button_time = 0;
     struct hmi_module_settings hmi_settings = {0};
@@ -98,6 +109,7 @@ void action_update_power_module_status(lv_event_t *e)
                 power_settings.enable_flag = !power_settings.enable_flag;
                 io.set_power_module_status(power_settings);
                 io.set_buzzer_beep(BUZZER_TONE_MID, BUZZER_DURATION_MID);
+                io.save_config();
                 break;
             case 4:
             case 5:

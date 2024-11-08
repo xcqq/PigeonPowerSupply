@@ -72,14 +72,73 @@ void IRAM_ATTR io_service::set_hmi_module_status(struct hmi_module_settings sett
     _hmi_set_flag = true;
 }
 
+int IRAM_ATTR io_service::read_config_file(void)
+{
+    _config_file = _fs.open(_config_file_name, FILE_READ);
+    if (!_config_file){
+        _config_file.close();
+        return -1;
+    }
+    DeserializationError ret = deserializeJson(_config_json, _config_file);
+    if(ret) {
+        _config_file.close();
+        return -1;
+    }
+
+    _config_file.close();
+    return 0;
+}
+
+int IRAM_ATTR io_service::save_config_file(void)
+{
+    Serial.println("start open config");
+    _config_file = _fs.open(_config_file_name, FILE_WRITE);
+    if (!_config_file){
+        _config_file.close();
+        return -1;
+    }
+    serializeJson(_config_json, _config_file);
+    Serial.println("end save config");
+    Serial.printf("Set voltage:%f Set current:%f\n", _power_module_settings.set_volt, _power_module_settings.set_curr);
+    _config_file.close();
+
+    return 0;
+}
+
+int IRAM_ATTR io_service::init_config_file(void)
+{
+    _config_file = _fs.open(_config_file_name, FILE_WRITE);
+    if (!_config_file){
+        return -1;
+    }
+    _config_json.clear();
+    _config_json["version"] = VERSION;
+    serializeJson(_config_json, _config_file);
+    _config_file.close();
+
+    return 0;
+
+}
+
 const uint16_t io_service::_beep_tone[3] = {4000, 6000, 8000};
 const uint16_t io_service::_beep_duration[3] = {15, 100, 500};
 
-void io_service::set_buzzer_beep(enum buzzer_tone tone, enum buzzer_duration duration) {
+void IRAM_ATTR io_service::set_buzzer_beep(enum buzzer_tone tone, enum buzzer_duration duration) {
     M5.Speaker.tone(_beep_tone[tone], _beep_duration[duration]);
 }
 
-void ICACHE_FLASH_ATTR io_service::setup()
+void IRAM_ATTR io_service::save_config(void)
+{
+    _config_update_flag = true;
+    if (_config_update_flag){
+        _config_json["set_volt"] = _power_module_settings.set_volt;
+        _config_json["set_curr"] = _power_module_settings.set_curr;
+        save_config_file();
+        _config_update_flag = false;
+    }
+}
+
+void IRAM_ATTR io_service::setup()
 {
     Serial.begin(115200);
 
@@ -89,6 +148,7 @@ void ICACHE_FLASH_ATTR io_service::setup()
         Serial.println("module pps connect error");
         delay(100);
     }
+    _pps.begin(&Wire, SDA, SCL, MODULE_POWER_ADDR, I2C_SPEED);
     _pps.setOutputVoltage(0.0);
     _pps.setOutputCurrent(0.0);
     _pps.setPowerEnable(false);
@@ -101,7 +161,51 @@ void ICACHE_FLASH_ATTR io_service::setup()
         Serial.println("module hmi connect error");
         delay(100);
     }
+    _hmi.begin(&Wire, HMI_ADDR, SDA, SCL, I2C_SPEED);
     _hmi.resetCounter();
+    Serial.printf("====================\n");
+
+    Serial.printf("==========Init SPIFFS==========\n");
+    if (!_fs.begin(true)) {
+        Serial.println("SPIFFS failed to init. Formatting......");
+        if (!_fs.format()) {
+            while (1) {
+                Serial.println("SPIFFS format failed");
+                delay(1000);
+            }
+        }
+    }
+    Serial.printf("Total size:%x Used size:%x\n", _fs.totalBytes(), _fs.usedBytes());
+    if (read_config_file()) {
+        Serial.println(F("Config file read failed"));
+        init_config_file();
+        /* initialized and retry */
+        if (read_config_file()) {
+            while (1) {
+                Serial.println(F("Initialize config file failed"));
+                delay(1000);
+            }
+        }
+    }
+    if (strcmp(VERSION, _config_json["version"])) {
+        Serial.println("Config version missmatched, initialize the config");
+        init_config_file();
+        if (read_config_file()) {
+            while (1) {
+                Serial.println(F("Initialize config file failed"));
+                delay(1000);
+            }
+        }
+    } else {
+        Serial.printf("Reading config file, version:%s\n", (const char *)_config_json["version"]);
+    }
+
+    /* update to settings */
+    _power_module_settings.set_volt = _config_json["set_volt"] | 0.0;
+    _power_module_settings.set_curr = _config_json["set_curr"] | 0.0;
+
+    set_power_module_status(_power_module_settings);
+
     Serial.printf("====================\n");
 
     M5.Speaker.begin();

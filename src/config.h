@@ -1,4 +1,4 @@
-#define VERSION "0.0.0.4" //version number
+#define VERSION "0.1" //version number
 #define DEV_TYPE "M5STACK"
 #define ROTATION 1
 

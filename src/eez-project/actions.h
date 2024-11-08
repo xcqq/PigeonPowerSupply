@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 extern void action_update_power_module_status(lv_event_t * e);
+extern void action_init_power_module_status(lv_event_t * e);
 
 
 #ifdef __cplusplus
