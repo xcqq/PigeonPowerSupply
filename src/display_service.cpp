@@ -28,6 +28,7 @@ static lv_color_t buf1[DISP_BUF_SIZE];
 extern lv_group_t *keypad_group;
 void ICACHE_FLASH_ATTR display_service::keypad_setup()
 {
+#if 0
     lv_indev_t *keypad_indev;
 
     lv_indev_drv_init(&_inter_key_indev_drv);
@@ -37,17 +38,18 @@ void ICACHE_FLASH_ATTR display_service::keypad_setup()
 
     lv_indev_set_group(keypad_indev, keypad_group);
 
-    // lv_indev_drv_init(&_hmi_key_indev_drv);
-    // _hmi_key_indev_drv.type = LV_INDEV_TYPE_KEYPAD;
-    // _hmi_key_indev_drv.read_cb = hmi_keypad_read;
-    // keypad_indev = lv_indev_drv_register(&_hmi_key_indev_drv);
-    // lv_indev_set_group(keypad_indev, keypad_group);
+    lv_indev_drv_init(&_hmi_key_indev_drv);
+    _hmi_key_indev_drv.type = LV_INDEV_TYPE_KEYPAD;
+    _hmi_key_indev_drv.read_cb = hmi_keypad_read;
+    keypad_indev = lv_indev_drv_register(&_hmi_key_indev_drv);
+    lv_indev_set_group(keypad_indev, keypad_group);
 
-    // lv_indev_drv_init(&_hmi_encoder_indev_drv);
-    // _hmi_encoder_indev_drv.type = LV_INDEV_TYPE_KEYPAD;
-    // _hmi_encoder_indev_drv.read_cb = hmi_encoder_read;
-    // keypad_indev = lv_indev_drv_register(&_hmi_encoder_indev_drv);
-    // lv_indev_set_group(keypad_indev, keypad_group);
+    lv_indev_drv_init(&_hmi_encoder_indev_drv);
+    _hmi_encoder_indev_drv.type = LV_INDEV_TYPE_KEYPAD;
+    _hmi_encoder_indev_drv.read_cb = hmi_encoder_read;
+    keypad_indev = lv_indev_drv_register(&_hmi_encoder_indev_drv);
+    lv_indev_set_group(keypad_indev, keypad_group);
+#endif
 }
 #endif
 
