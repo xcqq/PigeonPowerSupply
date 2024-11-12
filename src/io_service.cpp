@@ -216,4 +216,56 @@ void IRAM_ATTR io_service::loop()
 {
     power_module_sync();
     hmi_module_sync();
+    M5.update();
+}
+
+key_state IRAM_ATTR io_service::get_key_state(uint8_t &keys) {
+    key_state state = KEY_RELEASED;
+    _current_keys = KEY_NONE;
+    
+    if (!_hmi_module_status.button_1) {
+        _current_keys |= KEY_BIT(KeyBitmap::HMI_1);
+    }
+    if (!_hmi_module_status.button_2) {
+        _current_keys |= KEY_BIT(KeyBitmap::HMI_2);
+    }
+    if (!_hmi_module_status.button_s) {
+        _current_keys |= KEY_BIT(KeyBitmap::HMI_S);
+    }
+    if (M5.BtnA.isPressed()) {
+        _current_keys |= KEY_BIT(KeyBitmap::M5_A);
+    }
+    if (M5.BtnB.isPressed()) {
+        _current_keys |= KEY_BIT(KeyBitmap::M5_B);
+    }
+    if (M5.BtnC.isPressed()) {
+        _current_keys |= KEY_BIT(KeyBitmap::M5_C);
+    }
+
+    if (_current_keys != KEY_NONE) {
+        if (_current_keys != _last_keys) {
+            if (_last_keys != KEY_NONE && 
+                (xTaskGetTickCount() - _key_press_time <= pdMS_TO_TICKS(COMBO_KEY_TIMEOUT))) {
+                _current_keys |= _last_keys;
+            } else {
+                _key_press_time = xTaskGetTickCount();
+            }
+            _last_keys = _current_keys;
+        }
+        state = KEY_PRESSING;
+        keys = _current_keys;
+    }
+    else if (_last_keys != KEY_NONE) {
+        keys = _last_keys;
+        if (xTaskGetTickCount() - _key_press_time > pdMS_TO_TICKS(LONG_PRESSED_TIME)) {
+            state = KEY_LONG_PRESSED;
+        } else {
+            state = KEY_PRESSED;
+        }
+        _last_keys = KEY_NONE;
+    } else {
+        keys = KEY_NONE;
+    }
+
+    return state;
 }
