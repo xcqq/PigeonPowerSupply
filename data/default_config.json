@@ -1,0 +1,17 @@
+{
+    "version": "0.1",
+    "power_settings": {
+        "set_current": 0,
+        "set_voltage": 0,
+        "recall": [
+        ]
+    },
+    "protection_limits": {
+        "current_limit": 5.00,
+        "voltage_limit": 30.00,
+        "power_limit": 100.00
+    },
+    "user_preferences": {
+        "buzzer_enabled": true
+    }
+}

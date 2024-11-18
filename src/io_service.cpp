@@ -74,7 +74,7 @@ void IRAM_ATTR io_service::set_hmi_module_status(struct hmi_module_settings sett
 
 int IRAM_ATTR io_service::read_config_file(void)
 {
-    _config_file = _fs.open(_config_file_name, FILE_READ);
+    _config_file = _fs.open(CONFIG_FILE_USER, FILE_READ);
     if (!_config_file){
         _config_file.close();
         return -1;
@@ -91,15 +91,12 @@ int IRAM_ATTR io_service::read_config_file(void)
 
 int IRAM_ATTR io_service::save_config_file(void)
 {
-    Serial.println("start open config");
-    _config_file = _fs.open(_config_file_name, FILE_WRITE);
+    _config_file = _fs.open(CONFIG_FILE_USER, FILE_WRITE);
     if (!_config_file){
         _config_file.close();
         return -1;
     }
     serializeJson(_config_json, _config_file);
-    Serial.println("end save config");
-    Serial.printf("Set voltage:%f Set current:%f\n", _power_module_settings.set_volt, _power_module_settings.set_curr);
     _config_file.close();
 
     return 0;
@@ -107,17 +104,29 @@ int IRAM_ATTR io_service::save_config_file(void)
 
 int IRAM_ATTR io_service::init_config_file(void)
 {
-    _config_file = _fs.open(_config_file_name, FILE_WRITE);
-    if (!_config_file){
+    File default_config = _fs.open(CONFIG_FILE_DEFAULT, FILE_READ);
+    if (!default_config) {
         return -1;
     }
-    _config_json.clear();
-    _config_json["version"] = VERSION;
+    
+    JsonDocument default_json;
+    DeserializationError error = deserializeJson(default_json, default_config);
+    default_config.close();
+    
+    if (error) {
+        return -1;
+    }
+
+    _config_file = _fs.open(CONFIG_FILE_USER, FILE_WRITE);
+    if (!_config_file) {
+        return -1;
+    }
+
+    _config_json = default_json;
     serializeJson(_config_json, _config_file);
     _config_file.close();
 
     return 0;
-
 }
 
 const uint16_t io_service::_beep_tone[3] = {4000, 6000, 8000};
@@ -131,8 +140,8 @@ void IRAM_ATTR io_service::save_config(void)
 {
     _config_update_flag = true;
     if (_config_update_flag){
-        _config_json["set_volt"] = _power_module_settings.set_volt;
-        _config_json["set_curr"] = _power_module_settings.set_curr;
+        _config_json["power_settings"]["set_voltage"] = _power_module_settings.set_volt;
+        _config_json["power_settings"]["set_current"] = _power_module_settings.set_curr;
         save_config_file();
         _config_update_flag = false;
     }
@@ -176,33 +185,35 @@ void IRAM_ATTR io_service::setup()
         }
     }
     Serial.printf("Total size:%x Used size:%x\n", _fs.totalBytes(), _fs.usedBytes());
+    
+    bool need_init = false;
     if (read_config_file()) {
-        Serial.println(F("Config file read failed"));
-        init_config_file();
-        /* initialized and retry */
-        if (read_config_file()) {
-            while (1) {
-                Serial.println(F("Initialize config file failed"));
-                delay(1000);
-            }
-        }
+        Serial.println(F("User config file read failed"));
+        need_init = true;
+    } else if (strcmp(VERSION, _config_json["version"])) {
+        Serial.println("Config version mismatched");
+        need_init = true;
     }
-    if (strcmp(VERSION, _config_json["version"])) {
-        Serial.println("Config version missmatched, initialize the config");
-        init_config_file();
-        if (read_config_file()) {
+
+    if (need_init) {
+        Serial.println("Creating user config from default config");
+        if (init_config_file()) {
             while (1) {
                 Serial.println(F("Initialize config file failed"));
                 delay(1000);
             }
         }
-    } else {
-        Serial.printf("Reading config file, version:%s\n", (const char *)_config_json["version"]);
+        if (read_config_file()) {
+            while (1) {
+                Serial.println(F("Read new config file failed"));
+                delay(1000);
+            }
+        }
     }
 
     /* update to settings */
-    _power_module_settings.set_volt = _config_json["set_volt"] | 0.0;
-    _power_module_settings.set_curr = _config_json["set_curr"] | 0.0;
+    _power_module_settings.set_volt = _config_json["power_settings"]["set_voltage"].as<float>();
+    _power_module_settings.set_curr = _config_json["power_settings"]["set_current"].as<float>();
 
     set_power_module_status(_power_module_settings);
 

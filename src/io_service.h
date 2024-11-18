@@ -79,12 +79,14 @@ enum key_code {
     KEY_M5_C  = KEY_BIT(KeyBitmap::M5_C)      // 0b100000
 };
 
+static const char* const CONFIG_FILE_DEFAULT = "/default_config.json";
+static const char* const CONFIG_FILE_USER = "/user_config.json";
+
 class io_service
 {
 private:
     static const uint16_t _beep_tone[3];
     static const uint16_t _beep_duration[3];
-    static const constexpr char DRAM_ATTR *_config_file_name = "/config.json";
 
     struct power_module_status _power_module_status;
     struct hmi_module_status _hmi_module_status;
