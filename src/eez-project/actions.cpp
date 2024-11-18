@@ -50,16 +50,17 @@ private:
                 break;
 
             case KEY_HMI_S:
-            case KEY_M5_C:
                 adjust_step_size();
                 break;
 
             case KEY_M5_A:
-                adjust_output(-1);
                 break;
 
             case KEY_M5_B:
-                adjust_output(1);
+                toggle_output();
+                break;
+
+            case KEY_M5_C:
                 break;
         }
     }
@@ -67,16 +68,10 @@ private:
     // Handle long press
     void handle_long_press(uint8_t keys) {
         struct hmi_module_settings hmi_settings = {0};
-        
-        switch (keys) {
-            case KEY_M5_C:
-                toggle_output();
-                break;
 
-            case KEY_M5_A:
-            case KEY_M5_B:
-                toggle_voltage_current_mode(hmi_settings);
-                break;
+        switch (keys) {
+        default:
+            break;
         }
     }
 
