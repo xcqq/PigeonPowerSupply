@@ -11,9 +11,6 @@
 // Power Supply Control Class
 class PowerSupply {
 private:
-    static const constexpr float SET_CURR_MAX = 5.0;  // Maximum current setting 5A 
-    static const constexpr float SET_VOLT_MAX = 30.0; // Maximum voltage setting 30V
-    
     io_service& io;
     power_module_settings power_settings;
 
@@ -27,9 +24,9 @@ private:
         float set_volt = power_settings.set_volt;
 
         if (vc_sel_flag == 0) {
-            set_curr = adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, SET_CURR_MAX);
+            set_curr = adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
         } else {
-            set_volt = adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, SET_VOLT_MAX);
+            set_volt = adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
         }
 
         update_settings(set_volt, set_curr);
@@ -110,9 +107,9 @@ private:
         float set_volt = power_settings.set_volt;
         
         if (vc_sel_flag == 0) {
-            set_curr = adjust_value(set_curr + direction * set_step, 0, SET_CURR_MAX);
+            set_curr = adjust_value(set_curr + direction * set_step, 0, io.get_max_current());
         } else {
-            set_volt = adjust_value(set_volt + direction * set_step, 0, SET_VOLT_MAX);
+            set_volt = adjust_value(set_volt + direction * set_step, 0, io.get_max_voltage());
         }
         
         update_settings(set_volt, set_curr);

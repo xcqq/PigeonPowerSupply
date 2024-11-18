@@ -280,3 +280,11 @@ key_state IRAM_ATTR io_service::get_key_state(uint8_t &keys) {
 
     return state;
 }
+
+float IRAM_ATTR io_service::get_max_current(void) {
+    return _config_json["protection_limits"]["current_limit"].as<float>();
+}
+
+float IRAM_ATTR io_service::get_max_voltage(void) {
+    return _config_json["protection_limits"]["voltage_limit"].as<float>();
+}

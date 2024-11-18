@@ -132,5 +132,8 @@ public : io_service();
   void IRAM_ATTR save_config(void);
 
   key_state get_key_state(uint8_t &keys);
+
+  float get_max_current(void);
+  float get_max_voltage(void);
 };
 #endif
