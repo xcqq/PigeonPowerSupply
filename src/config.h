@@ -1,4 +1,5 @@
 #define VERSION "0.1" //version number
+#define COMPILE_DATE __DATE__ " " __TIME__
 #define DEV_TYPE "M5STACK"
 #define ROTATION 1
 

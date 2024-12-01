@@ -9,6 +9,10 @@ extern "C" {
 
 extern void action_update_power_module_status(lv_event_t * e);
 extern void action_init_power_module_status(lv_event_t * e);
+extern void action_init_setting_page(lv_event_t * e);
+extern void action_update_setting_page(lv_event_t * e);
+extern void action_init_about_page(lv_event_t * e);
+extern void action_update_about_page(lv_event_t * e);
 
 
 #ifdef __cplusplus
