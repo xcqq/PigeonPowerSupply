@@ -95,7 +95,7 @@
       "separateFolderForImagesAndFonts": true,
       "lvglInclude": "lvgl.h",
       "generateSourceCodeForEezFramework": true,
-      "compressFlowDefinition": false,
+      "compressFlowDefinition": true,
       "executionQueueSize": 2000,
       "expressionEvaluatorStackSize": 200
     }
@@ -1951,7 +1951,9 @@
               "speed": 200,
               "speedType": "literal",
               "delay": 0,
-              "delayType": "literal"
+              "delayType": "literal",
+              "useStack": true,
+              "useStackType": "literal"
             }
           ]
         },
@@ -2776,7 +2778,9 @@
               "speed": 200,
               "speedType": "literal",
               "delay": 0,
-              "delayType": "literal"
+              "delayType": "literal",
+              "useStack": true,
+              "useStackType": "literal"
             }
           ]
         },
@@ -3009,6 +3013,47 @@
               },
               "group": "",
               "groupIndex": 0
+            },
+            {
+              "objID": "8aa0fbce-3bfa-49dd-8a2f-27d0e9c49e1d",
+              "type": "LVGLListWidget",
+              "left": 14,
+              "top": 11,
+              "width": 293,
+              "height": 203,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "59b11a2c-e3c2-414f-d631-1b01f8cd208c",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "protect_limit_list",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "px",
+              "heightUnit": "px",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlag": true,
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "useStyle": "setting_list_style",
+              "localStyles": {
+                "objID": "b1823e20-316a-459a-c377-31d2046ec98e"
+              },
+              "group": "",
+              "groupIndex": 0
             }
           ],
           "widgetFlags": "CLICKABLE|PRESS_LOCK|CLICK_FOCUSABLE|GESTURE_BUBBLE|SNAPPABLE|SCROLLABLE|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER",
@@ -3044,7 +3089,9 @@
               "speed": 200,
               "speedType": "literal",
               "delay": 0,
-              "delayType": "literal"
+              "delayType": "literal",
+              "useStack": true,
+              "useStackType": "literal"
             }
           ]
         },
@@ -3166,7 +3213,15 @@
             "childStyles": []
           },
           "timeline": [],
-          "eventHandlers": [],
+          "eventHandlers": [
+            {
+              "objID": "a54c718a-5618-4aaa-d423-262b38b290b0",
+              "eventName": "SCREEN_LOAD_START",
+              "handlerType": "flow",
+              "action": "update_power_module_status",
+              "userData": 0
+            }
+          ],
           "leftUnit": "px",
           "topUnit": "px",
           "widthUnit": "px",
@@ -3270,6 +3325,47 @@
               },
               "group": "",
               "groupIndex": 0
+            },
+            {
+              "objID": "c453be49-7e1e-4c88-af11-5af4ab8e5821",
+              "type": "LVGLListWidget",
+              "left": 14,
+              "top": 10,
+              "width": 293,
+              "height": 203,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "8e639fa1-a023-464b-bcf6-bacfd612330d",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "other_setting_list",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "px",
+              "heightUnit": "px",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlag": true,
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "useStyle": "setting_list_style",
+              "localStyles": {
+                "objID": "7d10a00e-977c-405e-a9ed-b3ef7666012d"
+              },
+              "group": "",
+              "groupIndex": 0
             }
           ],
           "widgetFlags": "CLICKABLE|PRESS_LOCK|CLICK_FOCUSABLE|GESTURE_BUBBLE|SNAPPABLE|SCROLLABLE|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER",
@@ -3305,7 +3401,9 @@
               "speed": 200,
               "speedType": "literal",
               "delay": 0,
-              "delayType": "literal"
+              "delayType": "literal",
+              "useStack": true,
+              "useStackType": "literal"
             }
           ]
         },
@@ -3396,6 +3494,13 @@
           "source": "1e2b0556-c15b-4ae3-e647-888ab685f62d",
           "output": "True",
           "target": "73f7d79e-6340-4ad5-8256-beba68b6da0a",
+          "input": "@seqin"
+        },
+        {
+          "objID": "50c38de1-91da-4a8a-fbb8-6426030d0289",
+          "source": "44e1f764-b087-4b82-878f-078df27831d3",
+          "output": "SCREEN_LOAD_START",
+          "target": "69b9ee6c-c3da-467b-cc4b-813d0dc98a5c",
           "input": "@seqin"
         }
       ],
@@ -3566,7 +3671,9 @@
               "speed": 200,
               "speedType": "literal",
               "delay": 0,
-              "delayType": "literal"
+              "delayType": "literal",
+              "useStack": true,
+              "useStackType": "literal"
             }
           ]
         },
@@ -3928,7 +4035,53 @@
         "forWidgetType": "LVGLListWidget",
         "childStyles": [],
         "definition": {
-          "objID": "57a9399a-541d-4949-9eeb-0b9781f68cb2"
+          "objID": "57a9399a-541d-4949-9eeb-0b9781f68cb2",
+          "definition": {
+            "MAIN": {
+              "DEFAULT": {
+                "text_font": "roboto_24"
+              }
+            }
+          }
+        }
+      },
+      {
+        "objID": "5157d524-1600-49fc-d7be-c6f31690cb93",
+        "name": "setting_spinbox_style",
+        "forWidgetType": "LVGLSpinboxWidget",
+        "childStyles": [],
+        "definition": {
+          "objID": "b9e6ce07-6750-4957-d460-2dcc87575cc8",
+          "definition": {
+            "MAIN": {
+              "DEFAULT": {
+                "text_font": "roboto_24",
+                "text_align": "RIGHT",
+                "grid_row_dsc_array": "",
+                "grid_column_dsc_array": "",
+                "pad_left": 5,
+                "pad_right": 5,
+                "pad_bottom": 0,
+                "pad_top": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "objID": "e194885e-0e11-44af-944e-cd017c77812a",
+        "name": "setting_list_button_style",
+        "forWidgetType": "LVGLListWidget",
+        "childStyles": [],
+        "definition": {
+          "objID": "a28a7ce9-0809-4296-a153-c895b94aeb2b",
+          "definition": {
+            "MAIN": {
+              "DEFAULT": {
+                "text_font": "roboto_24"
+              }
+            }
+          }
         }
       }
     ],
