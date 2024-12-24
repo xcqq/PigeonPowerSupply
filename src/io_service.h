@@ -130,6 +130,7 @@ public : io_service();
   void set_hmi_module_status(struct hmi_module_settings);
   void set_buzzer_beep(enum buzzer_tone tone, enum buzzer_duration duration);
   void IRAM_ATTR save_config(void);
+  JsonDocument& get_config_json(void);
 
   key_state get_key_state(uint8_t &keys);
 

@@ -288,3 +288,7 @@ float IRAM_ATTR io_service::get_max_current(void) {
 float IRAM_ATTR io_service::get_max_voltage(void) {
     return _config_json["protection_limits"]["voltage_limit"].as<float>();
 }
+
+JsonDocument& io_service::get_config_json(void) {
+    return _config_json;
+}
