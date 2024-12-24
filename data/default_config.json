@@ -7,11 +7,42 @@
         ]
     },
     "protection_limits": {
-        "current_limit": 5.00,
-        "voltage_limit": 30.00,
-        "power_limit": 100.00
+        "current_limit": {
+            "value": 5.00,
+            "min": 0,
+            "max": 5
+        },
+        "voltage_limit": {
+            "value": 30.00,
+            "min": 0,
+            "max": 30
+        },
+        "power_limit": {
+            "value": 100.00,
+            "min": 0,
+            "max": 100
+        },
+        "temperature_limit": {
+            "value": 40,
+            "min": 0,
+            "max": 50
+        }
     },
     "user_preferences": {
-        "buzzer_enabled": true
+        "buzzer": false,
+        "brightness": {
+            "min": 0,
+            "max": 10,
+            "value": 10,
+            "step": 1
+        },
+        "language": {
+            "value": "en",
+            "options": ["en", "zh"]
+        },
+        "refresh_rate": {
+            "value": "high",
+            "options": ["high", "low"]
+        }
     }
 }
