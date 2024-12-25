@@ -6,6 +6,7 @@
 #include <string>
 #include <variant>
 #include <vector>
+#include "../../../io_service.h"
 
 using std::string;
 using std::vector;
@@ -16,10 +17,11 @@ protected:
     const char *title;
     virtual void setting_item_event_cb(lv_event_t *e) {};
     const JsonVariant json_config;
-
+    void (*callback)(ConfigSettingItem *, io_service &);
+    io_service &io;
 public:
-    ConfigSettingItem(const char *title, const JsonVariant config)
-        : title(title), json_config(config)
+    ConfigSettingItem(const char *title, const JsonVariant config, io_service &io, void (*callback)(ConfigSettingItem *, io_service &))
+        : title(title), json_config(config), io(io), callback(callback)
     {
     }
 
@@ -65,7 +67,7 @@ private:
     void setting_item_event_cb(lv_event_t *e) override;
 
 public:
-    IntSettingItem(const char *title, const JsonVariant config) : ConfigSettingItem(title, config)
+    IntSettingItem(const char *title, const JsonVariant config, io_service &io, void (*callback)(ConfigSettingItem *, io_service &)) : ConfigSettingItem(title, config, io, callback)
     {
         min = get_config_min();
         max = get_config_max();
@@ -92,7 +94,7 @@ private:
     void setting_item_event_cb(lv_event_t *e) override;
 
 public:
-    BoolSettingItem(const char *title, const JsonVariant config) : ConfigSettingItem(title, config)
+    BoolSettingItem(const char *title, const JsonVariant config, io_service &io, void (*callback)(ConfigSettingItem *, io_service &)) : ConfigSettingItem(title, config, io, callback)
     {
     }
     bool getValue() const override
@@ -143,7 +145,7 @@ private:
     void setting_item_event_cb(lv_event_t *e) override;
 
 public:
-    FloatSettingItem(const char *title, const JsonVariant config) : ConfigSettingItem(title, config)
+    FloatSettingItem(const char *title, const JsonVariant config, io_service &io, void (*callback)(ConfigSettingItem *, io_service &)) : ConfigSettingItem(title, config, io, callback)
     {
         min = get_config_min();
         max = get_config_max();
@@ -172,7 +174,7 @@ private:
     void setting_item_event_cb(lv_event_t *e) override;
 
 public:
-    ListSettingItem(const char *title, const JsonVariant config) : ConfigSettingItem(title, config)
+    ListSettingItem(const char *title, const JsonVariant config, io_service &io, void (*callback)(ConfigSettingItem *, io_service &)) : ConfigSettingItem(title, config, io, callback)
     {
         options = get_config_options();
     }

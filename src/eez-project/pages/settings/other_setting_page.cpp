@@ -6,18 +6,22 @@ void OtherSettingPage::init()
     other_setting_group = lv_group_create();
     lv_obj_clean(other_setting_list);
     JsonVariant config = io.get_config_json();
-    beep_setting_item = new BoolSettingItem("Buzzer", config["user_preferences"]["buzzer"]);
+    beep_setting_item = new BoolSettingItem("Buzzer", config["user_preferences"]["buzzer"], io, [](ConfigSettingItem<bool> *item, io_service &io) {
+        io.set_buzzer(item->getValue());
+    });
     lv_obj_t *btn = beep_setting_item->render(other_setting_list);
 
     brightness_setting_item =
-        new IntSettingItem("Brightness", config["user_preferences"]["brightness"]);
+        new IntSettingItem("Brightness", config["user_preferences"]["brightness"], io, [](ConfigSettingItem<int> *item, io_service &io) {
+            io.set_brightness(item->getValue());
+        });
     lv_obj_t *btn_brightness = brightness_setting_item->render(other_setting_list);
 
     refresh_rate_setting_item =
-        new ListSettingItem("Refresh Rate", config["user_preferences"]["refresh_rate"]);
+        new ListSettingItem("Refresh Rate", config["user_preferences"]["refresh_rate"], io, NULL);
     lv_obj_t *btn_refresh_rate = refresh_rate_setting_item->render(other_setting_list);
 
-    language_setting_item = new ListSettingItem("Language", config["user_preferences"]["language"]);
+    language_setting_item = new ListSettingItem("Language", config["user_preferences"]["language"], io, NULL);
     lv_obj_t *btn_language = language_setting_item->render(other_setting_list);
 
     lv_group_remove_all_objs(other_setting_group);
@@ -81,6 +85,7 @@ void OtherSettingPage::handle_short_press(uint8_t keys)
         if (current_selected_btn) {
             current_selected_btn = nullptr;
         } else {
+            io.save_config();
             eez_flow_set_screen(SCREEN_ID_ROOT_SETTING_PAGE, LV_SCR_LOAD_ANIM_FADE_IN, 200, 0);
         }
         break;

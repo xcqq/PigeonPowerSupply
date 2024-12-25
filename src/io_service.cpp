@@ -67,6 +67,10 @@ void IRAM_ATTR io_service::set_power_module_status(struct power_module_settings 
     _power_set_flag = true;
 }
 
+struct power_module_settings IRAM_ATTR io_service::get_power_module_settings(void) {
+    return _power_module_settings;
+}
+
 void IRAM_ATTR io_service::set_hmi_module_status(struct hmi_module_settings settings){
     _hmi_module_settings = settings;
     _hmi_set_flag = true;
@@ -133,7 +137,9 @@ const uint16_t io_service::_beep_tone[3] = {4000, 6000, 8000};
 const uint16_t io_service::_beep_duration[3] = {15, 100, 500};
 
 void IRAM_ATTR io_service::set_buzzer_beep(enum buzzer_tone tone, enum buzzer_duration duration) {
-    M5.Speaker.tone(_beep_tone[tone], _beep_duration[duration]);
+    if (_power_module_settings.buzzer) {
+        M5.Speaker.tone(_beep_tone[tone], _beep_duration[duration]);
+    }
 }
 
 void IRAM_ATTR io_service::save_config(void)
@@ -214,7 +220,13 @@ void IRAM_ATTR io_service::setup()
     /* update to settings */
     _power_module_settings.set_volt = _config_json["power_settings"]["set_voltage"].as<float>();
     _power_module_settings.set_curr = _config_json["power_settings"]["set_current"].as<float>();
-
+    _power_module_settings.buzzer = _config_json["user_preferences"]["buzzer"].as<bool>();
+    _power_module_settings.brightness = _config_json["user_preferences"]["brightness"]["value"].as<int>();
+    _power_module_settings.current_limit = _config_json["protection_limits"]["current_limit"]["value"].as<float>();
+    _power_module_settings.voltage_limit = _config_json["protection_limits"]["voltage_limit"]["value"].as<float>();
+    _power_module_settings.power_limit = _config_json["protection_limits"]["power_limit"]["value"].as<int>();
+    _power_module_settings.temperature_limit = _config_json["protection_limits"]["temperature_limit"]["value"].as<int>();
+    set_brightness(_power_module_settings.brightness);
     set_power_module_status(_power_module_settings);
 
     Serial.printf("====================\n");
@@ -282,13 +294,46 @@ key_state IRAM_ATTR io_service::get_key_state(uint8_t &keys) {
 }
 
 float IRAM_ATTR io_service::get_max_current(void) {
-    return _config_json["protection_limits"]["current_limit"].as<float>();
+    return _config_json["protection_limits"]["current_limit"]["value"].as<float>();
 }
 
 float IRAM_ATTR io_service::get_max_voltage(void) {
-    return _config_json["protection_limits"]["voltage_limit"].as<float>();
+    return _config_json["protection_limits"]["voltage_limit"]["value"].as<float>();
+}
+
+int IRAM_ATTR io_service::get_power_limit(void) {
+    return _config_json["protection_limits"]["power_limit"]["value"].as<int>();
+}
+
+int IRAM_ATTR io_service::get_temperature_limit(void) {
+    return _config_json["protection_limits"]["temperature_limit"]["value"].as<int>();
 }
 
 JsonDocument& io_service::get_config_json(void) {
     return _config_json;
+}
+
+void IRAM_ATTR io_service::set_brightness(int brightness) {
+    Serial.printf("set brightness:%d\n", brightness);
+    M5.Lcd.setBrightness((uint8_t)(brightness * 255 / 10));
+}
+
+void IRAM_ATTR io_service::set_buzzer(bool buzzer) {
+    _power_module_settings.buzzer = buzzer;
+}
+
+void IRAM_ATTR io_service::set_current_limit(float current_limit) {
+    _power_module_settings.current_limit = current_limit;
+}
+
+void IRAM_ATTR io_service::set_voltage_limit(float voltage_limit) {
+    _power_module_settings.voltage_limit = voltage_limit;
+}
+
+void IRAM_ATTR io_service::set_power_limit(int power_limit) {
+    _power_module_settings.power_limit = power_limit;
+}
+
+void IRAM_ATTR io_service::set_temperature_limit(int temperature_limit) {
+    _power_module_settings.temperature_limit = temperature_limit;
 }

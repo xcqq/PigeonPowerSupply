@@ -21,6 +21,12 @@ struct power_module_settings {
     float set_volt;
     float set_curr;
     bool enable_flag;
+    bool buzzer;
+    int brightness;
+    float current_limit;
+    float voltage_limit;
+    int power_limit;
+    int temperature_limit;
 };
 
 struct hmi_module_status {
@@ -131,10 +137,19 @@ public : io_service();
   void set_buzzer_beep(enum buzzer_tone tone, enum buzzer_duration duration);
   void IRAM_ATTR save_config(void);
   JsonDocument& get_config_json(void);
+  void set_brightness(int brightness);
+  void set_buzzer(bool buzzer);
+  void set_current_limit(float current_limit);
+  void set_voltage_limit(float voltage_limit);
+  void set_power_limit(int power_limit);
+  void set_temperature_limit(int temperature_limit);
+  struct power_module_settings get_power_module_settings(void);
 
   key_state get_key_state(uint8_t &keys);
 
   float get_max_current(void);
   float get_max_voltage(void);
+  int get_power_limit(void);
+  int get_temperature_limit(void);
 };
 #endif

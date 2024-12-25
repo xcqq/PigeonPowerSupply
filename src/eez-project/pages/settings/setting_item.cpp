@@ -40,6 +40,9 @@ lv_obj_t *BoolSettingItem::render(lv_obj_t *parent)
         [](lv_event_t *e) {
             auto item = (BoolSettingItem *)lv_event_get_user_data(e);
             item->setting_item_event_cb(e);
+            if (item->callback) {
+                item->callback(item, item->io);
+            }
         },
         LV_EVENT_KEY, this);
     if (getValue()) {
@@ -126,6 +129,9 @@ lv_obj_t *IntSettingItem::render(lv_obj_t *parent)
         [](lv_event_t *e) {
             auto item = (IntSettingItem *)lv_event_get_user_data(e);
             item->setting_item_event_cb(e);
+            if (item->callback) {
+                item->callback(item, item->io);
+            }
         },
         LV_EVENT_KEY, this);
 
@@ -186,6 +192,9 @@ lv_obj_t *FloatSettingItem::render(lv_obj_t *parent)
         [](lv_event_t *e) {
             auto item = (FloatSettingItem *)lv_event_get_user_data(e);
             item->setting_item_event_cb(e);
+            if (item->callback) {
+                item->callback(item, item->io);
+            }
         },
         LV_EVENT_KEY, this);
 
@@ -276,6 +285,9 @@ lv_obj_t *ListSettingItem::render(lv_obj_t *parent)
         [](lv_event_t *e) {
             auto item = (ListSettingItem *)lv_event_get_user_data(e);
             item->setting_item_event_cb(e);
+            if (item->callback) {
+                item->callback(item, item->io);
+            }
         },
         LV_EVENT_KEY, this);
 

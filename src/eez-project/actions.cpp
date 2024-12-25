@@ -12,12 +12,14 @@
 #include "pages/settings/root_setting_page.h"
 #include "pages/settings/about_page.h"
 #include "pages/settings/other_setting_page.h"
+#include "pages/settings/protect_limit_page.h"
 
 extern io_service io;
 HomePage home_page(io);
 RootSettingPage root_setting_page(io);
 AboutPage about_page(io);
 OtherSettingPage other_setting_page(io);
+ProtectLimitPage protect_limit_page(io);
 
 void IRAM_ATTR action_init_power_module_status(lv_event_t *e) {
     home_page.init();
@@ -44,9 +46,11 @@ void IRAM_ATTR action_update_about_page(lv_event_t *e) {
 }
 
 void IRAM_ATTR action_init_protect_limit_page(lv_event_t *e) {
+    protect_limit_page.init();
 }
 
 void IRAM_ATTR action_update_protect_limit_page(lv_event_t *e) {
+    protect_limit_page.update();
 }
 
 void IRAM_ATTR action_init_other_setting_page(lv_event_t *e) {

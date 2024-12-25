@@ -89,6 +89,7 @@ void HomePage::update_status_variables() {
 
 void HomePage::init() {
     power_module_status power_status = io.get_power_module_status();
+    power_settings = io.get_power_module_settings();
     power_settings.set_curr = power_status.set_curr;
     power_settings.set_volt = power_status.set_volt;
     io.set_power_module_status(power_settings);
@@ -158,9 +159,17 @@ void HomePage::handle_encoder(const hmi_module_status& hmi_status) {
     float set_volt = power_settings.set_volt;
 
     if (vc_sel_flag == 0) {
-        set_curr = adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
+        float new_curr = adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
+        // Check if new current would exceed power limit
+        if ((new_curr * set_volt) <= io.get_power_limit()) {
+            set_curr = new_curr;
+        }
     } else {
-        set_volt = adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
+        float new_volt = adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
+        // Check if new voltage would exceed power limit  
+        if ((new_volt * set_curr) <= io.get_power_limit()) {
+            set_volt = new_volt;
+        }
     }
 
     update_settings(set_volt, set_curr);

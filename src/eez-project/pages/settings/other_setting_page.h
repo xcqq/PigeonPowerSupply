@@ -1,7 +1,10 @@
 #pragma once
 
+#include <string>
 #include "../page.h"
 #include "setting_item.h"
+
+using std::string;
 
 class OtherSettingPage : public Page
 {

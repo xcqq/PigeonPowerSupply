@@ -8,16 +8,24 @@ void ProtectLimitPage::init() {
     lv_group_set_wrap(protect_limit_group, false);
 
     JsonVariant config = io.get_config_json();
-    current_limit_item = new FloatSettingItem("Current Limit", config["protection_limits"]["current_limit"]);
+    current_limit_item = new FloatSettingItem("Current Limit", config["protection_limits"]["current_limit"], io, [](ConfigSettingItem<float> *item, io_service &io) {
+        io.set_current_limit(item->getValue());
+    });
     lv_obj_t *current_limit_item_obj = current_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, current_limit_item_obj);
-    voltage_limit_item = new FloatSettingItem("Voltage Limit", config["protection_limits"]["voltage_limit"]);
+    voltage_limit_item = new FloatSettingItem("Voltage Limit", config["protection_limits"]["voltage_limit"], io, [](ConfigSettingItem<float> *item, io_service &io) {
+        io.set_voltage_limit(item->getValue());
+    });
     lv_obj_t *voltage_limit_item_obj = voltage_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, voltage_limit_item_obj);
-    power_limit_item = new IntSettingItem("Power Limit", config["protection_limits"]["power_limit"]);
+    power_limit_item = new IntSettingItem("Power Limit", config["protection_limits"]["power_limit"], io, [](ConfigSettingItem<int> *item, io_service &io) {
+        io.set_power_limit(item->getValue());
+    });
     lv_obj_t *power_limit_item_obj = power_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, power_limit_item_obj);
-    temperature_limit_item = new IntSettingItem("Temperature Limit", config["protection_limits"]["temperature_limit"]);
+    temperature_limit_item = new IntSettingItem("Temperature Limit", config["protection_limits"]["temperature_limit"], io, [](ConfigSettingItem<int> *item, io_service &io) {
+        io.set_temperature_limit(item->getValue());
+    });
     lv_obj_t *temperature_limit_item_obj = temperature_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, temperature_limit_item_obj);
 
