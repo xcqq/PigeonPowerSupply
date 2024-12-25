@@ -32,6 +32,16 @@ void RootSettingPage::init() {
         }
     }, LV_EVENT_KEY, NULL);
 
+    lv_obj_add_event_cb(btn_protect, [](lv_event_t *e) {
+        auto page = (RootSettingPage*)lv_event_get_user_data(e);
+        lv_event_code_t code = lv_event_get_code(e);
+        Serial.print(F("[INFO] Protect limit page event code: "));
+        Serial.println(code);
+        if (code == LV_EVENT_KEY) {
+            eez_flow_set_screen(SCREEN_ID_PROTECT_LIMIT_PAGE, LV_SCR_LOAD_ANIM_FADE_IN, 200, 0);
+        }
+    }, LV_EVENT_KEY, NULL);
+
     lv_group_remove_all_objs(setting_group);
     lv_group_add_obj(setting_group, btn_recall);
     lv_group_add_obj(setting_group, btn_protect);
