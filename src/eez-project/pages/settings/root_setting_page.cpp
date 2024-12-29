@@ -7,7 +7,6 @@ void RootSettingPage::init() {
     lv_obj_clean(setting_list);
     
     // Add buttons and add them to group
-    lv_obj_t* btn_recall = lv_list_add_btn(setting_list, LV_SYMBOL_EDIT, "Recall Setting");
     lv_obj_t* btn_protect = lv_list_add_btn(setting_list, LV_SYMBOL_CHARGE, "Protect Limit");
     lv_obj_t* btn_other = lv_list_add_btn(setting_list, LV_SYMBOL_SETTINGS, "Other Setting");
     lv_obj_t* btn_about = lv_list_add_btn(setting_list, LV_SYMBOL_BELL, "About");
@@ -43,13 +42,12 @@ void RootSettingPage::init() {
     }, LV_EVENT_KEY, NULL);
 
     lv_group_remove_all_objs(setting_group);
-    lv_group_add_obj(setting_group, btn_recall);
     lv_group_add_obj(setting_group, btn_protect);
     lv_group_add_obj(setting_group, btn_other);
     lv_group_add_obj(setting_group, btn_about);
     lv_group_set_wrap(setting_group, false);
 
-    lv_group_focus_obj(btn_recall);
+    lv_group_focus_obj(btn_protect);
 }
 
 void RootSettingPage::handle_encoder(const hmi_module_status& hmi_status) {

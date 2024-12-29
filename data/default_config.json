@@ -48,5 +48,9 @@
             "value": "high",
             "options": ["high", "low"]
         }
+    },
+    "recall_settings": {
+        "recall": [
+        ]
     }
 }

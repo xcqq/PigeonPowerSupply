@@ -87,8 +87,72 @@ void HomePage::update_status_variables() {
                               IntegerValue(float_to_int_rounded(power_status.in_volt, 100)));
     }
 
+void HomePage::add_recall_setting(float set_volt, float set_curr) {
+    if (recall_settings.isNull()) {
+        recall_settings = io.get_config_json()["recall_settings"].createNestedArray("recall");
+    }
+    
+    JsonObject recall_setting = recall_settings.createNestedObject();
+    recall_setting["set_volt"] = set_volt;
+    recall_setting["set_curr"] = set_curr;
+    
+    io.save_config();
+    
+    Serial.println(F("[INFO] Added new recall setting:"));
+    Serial.print(F("  Voltage: "));
+    Serial.print(set_volt);
+    Serial.print(F("V, Current: "));
+    Serial.println(set_curr);
+}
+
+void HomePage::load_recall_settings_list(lv_obj_t* list) {
+    char buf[20];
+    lv_obj_clean(list);
+    lv_group_remove_all_objs(recall_group);
+    lv_group_set_wrap(recall_group, false);
+    for (JsonVariant recall_setting : recall_settings) {
+        if (recall_setting.isNull()) {
+            sprintf(buf, "%.2f V, %.2f A", 0.0, 0.0); 
+        } else {
+            if (recall_setting["set_volt"].isNull() || recall_setting["set_curr"].isNull()) {
+                sprintf(buf, "%.2f V, %.2f A", 0.0, 0.0); 
+            } else {
+                sprintf(buf, "%.2f V, %.2f A", recall_setting["set_volt"].as<float>(), recall_setting["set_curr"].as<float>()); 
+            }
+        }
+        lv_obj_t* btn = lv_list_add_btn(list, NULL, buf);
+        lv_group_add_obj(recall_group, btn);
+    }
+    if (lv_obj_get_child_cnt(list) > 0) {
+        lv_obj_t* first_btn = lv_obj_get_child(list, 0);
+        lv_group_focus_obj(first_btn);
+    }
+}
+
 void HomePage::init() {
+    delay(100);
     power_module_status power_status = io.get_power_module_status();
+    
+    JsonVariant config_recall = io.get_config_json()["recall_settings"]["recall"];
+    if (config_recall.isNull()) {
+        recall_settings = io.get_config_json()["recall_settings"].createNestedArray("recall");
+    } else {
+        recall_settings = config_recall;
+    }
+    
+    Serial.println(F("[INFO] Recall settings:"));
+    if (recall_settings.isNull()) {
+        Serial.println(F("  No recall settings found"));
+    } else {
+        for (JsonVariant recall_setting : recall_settings) {
+            Serial.print(F("  Voltage: "));
+            Serial.print(recall_setting["set_volt"].as<float>());
+        Serial.print(F("V, Current: "));
+        Serial.print(recall_setting["set_curr"].as<float>());
+        Serial.println(F("A"));
+        }
+    }
+    recall_group = lv_group_create();
     power_settings = io.get_power_module_settings();
     power_settings.set_curr = power_status.set_curr;
     power_settings.set_volt = power_status.set_volt;
@@ -116,6 +180,12 @@ void HomePage::handle_long_press(uint8_t keys) {
     struct hmi_module_settings hmi_settings = {0};
 
     switch (keys) {
+    case KEY_M5_A:
+        if (!recall_list_open) {
+            add_recall_setting(power_settings.set_volt, power_settings.set_curr);
+            io.set_buzzer_beep(BUZZER_TONE_MID, BUZZER_DURATION_MID);
+        }
+        break;
     default:
         break;
     }
@@ -134,18 +204,79 @@ void HomePage::handle_short_press(uint8_t keys) {
             break;
 
         case KEY_HMI_S:
-            adjust_step_size();
+            if(recall_list_open) {
+                lv_obj_t* focused_obj = lv_group_get_focused(recall_group);
+                uint32_t index = lv_obj_get_index(focused_obj);
+                
+                if (index < recall_settings.size()) {
+                    JsonObject recall_item = recall_settings[index];
+                    float set_volt = recall_item["set_volt"];
+                    float set_curr = recall_item["set_curr"];
+                    update_settings(set_volt, set_curr);
+                }
+                
+                recall_list_open = false;
+                lv_obj_t* list = objects.recall_list;
+                lv_obj_add_flag(list, LV_OBJ_FLAG_HIDDEN);
+            } else {
+                adjust_step_size();
+            }
             break;
 
         case KEY_M5_A:
+            if (recall_list_open) {
+                recall_list_open = false;
+                lv_obj_t* list = objects.recall_list;
+                lv_obj_add_flag(list, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_t* middle_button_label = objects.middle_button_label;
+                lv_label_set_text(middle_button_label, "ON/OFF");
+                lv_obj_t* right_button_label = objects.right_button_label;
+                lv_label_set_text(right_button_label, "Menu");
+            } else {
+                recall_list_open = true;
+                lv_obj_t* list = objects.recall_list;
+                lv_obj_clear_flag(list, LV_OBJ_FLAG_HIDDEN);
+                load_recall_settings_list(list);
+                lv_obj_t* middle_button_label = objects.middle_button_label;
+                lv_label_set_text(middle_button_label, "Del");
+                lv_obj_t* right_button_label = objects.right_button_label;
+                lv_label_set_text(right_button_label, "Clear");
+                
+            }
             break;
 
         case KEY_M5_B:
-            toggle_output();
+            if (recall_list_open) {
+                lv_obj_t* focused_obj = lv_group_get_focused(recall_group);
+                uint32_t index = lv_obj_get_index(focused_obj);
+                
+                if (index < recall_settings.size()) {
+                    recall_settings.remove(index);
+                    io.save_config();
+                    
+                    Serial.print(F("[INFO] Deleted recall setting at index: "));
+                    Serial.println(index);
+                    
+                    lv_obj_t* list = objects.recall_list;
+                    load_recall_settings_list(list);
+                }
+            } else {
+                toggle_output();
+            }
             break;
 
         case KEY_M5_C:
-            eez_flow_set_screen(SCREEN_ID_ROOT_SETTING_PAGE, LV_SCR_LOAD_ANIM_FADE_IN, 200, 0);
+            if (recall_list_open) {
+                recall_settings.clear();
+                io.save_config();
+                
+                Serial.println(F("[INFO] Cleared all recall settings"));
+                
+                lv_obj_t* list = objects.recall_list;
+                load_recall_settings_list(list);
+            } else {
+                eez_flow_set_screen(SCREEN_ID_ROOT_SETTING_PAGE, LV_SCR_LOAD_ANIM_FADE_IN, 200, 0);
+            }
             break;
     }
 }
@@ -158,17 +289,22 @@ void HomePage::handle_encoder(const hmi_module_status& hmi_status) {
     float set_curr = power_settings.set_curr;
     float set_volt = power_settings.set_volt;
 
-    if (vc_sel_flag == 0) {
-        float new_curr = adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
-        // Check if new current would exceed power limit
-        if ((new_curr * set_volt) <= io.get_power_limit()) {
-            set_curr = new_curr;
-        }
+    if (recall_list_open) {
+        if (hmi_status.encoder_inc < 0) lv_group_focus_next(recall_group);
+        else lv_group_focus_prev(recall_group);
     } else {
-        float new_volt = adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
-        // Check if new voltage would exceed power limit  
-        if ((new_volt * set_curr) <= io.get_power_limit()) {
-            set_volt = new_volt;
+        if (vc_sel_flag == 0) {
+            float new_curr = adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
+            // Check if new current would exceed power limit
+            if ((new_curr * set_volt) <= io.get_power_limit()) {
+                set_curr = new_curr;
+            }
+        } else {
+            float new_volt = adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
+            // Check if new voltage would exceed power limit  
+            if ((new_volt * set_curr) <= io.get_power_limit()) {
+                set_volt = new_volt;
+            }
         }
     }
 
