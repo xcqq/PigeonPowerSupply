@@ -95,7 +95,7 @@
       "separateFolderForImagesAndFonts": true,
       "lvglInclude": "lvgl.h",
       "generateSourceCodeForEezFramework": true,
-      "compressFlowDefinition": true,
+      "compressFlowDefinition": false,
       "executionQueueSize": 2000,
       "expressionEvaluatorStackSize": 200
     }
@@ -261,508 +261,7 @@
       }
     ]
   },
-  "actions": [
-    {
-      "objID": "4e9d775c-5229-4ee3-8c02-a12ece6850ff",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "update_power_module_status",
-      "implementationType": "native"
-    },
-    {
-      "objID": "e4d16a2f-9b8d-4914-f5f2-7d24320a16d9",
-      "components": [
-        {
-          "objID": "06b43b88-a60b-408d-e84d-3cb2c9f8b3ad",
-          "type": "SwitchActionComponent",
-          "left": -241,
-          "top": -51,
-          "width": 309,
-          "height": 71,
-          "customInputs": [
-            {
-              "objID": "f84c0ce5-c658-417f-8554-0259bbe4b7da",
-              "name": "value",
-              "type": "enum:vc_selction"
-            }
-          ],
-          "customOutputs": [],
-          "tests": [
-            {
-              "objID": "dfc6cd9b-b45c-4005-88e2-5b1e9896d827",
-              "condition": "value==vc_selction.CURR_SEL",
-              "outputName": "CURR_SEL",
-              "outputValue": ""
-            },
-            {
-              "objID": "9275822d-941e-4de3-b2ed-b425d4829a6b",
-              "condition": "value==vc_selction.VOLT_SEL",
-              "outputName": "VOLT_SEL",
-              "outputValue": ""
-            }
-          ]
-        },
-        {
-          "objID": "010f74d1-7e90-45b0-bb67-3bc9a0a35acb",
-          "type": "SetVariableActionComponent",
-          "left": 106,
-          "top": -65,
-          "width": 220,
-          "height": 57,
-          "customInputs": [],
-          "customOutputs": [],
-          "entries": [
-            {
-              "objID": "9ad043ac-b1f4-4f81-f2a3-8d056ca96ad4",
-              "variable": "set_curr",
-              "value": "set_curr+set_step"
-            }
-          ]
-        },
-        {
-          "objID": "98563f64-3e87-4e2f-d6cf-b3df5d75caba",
-          "type": "SetVariableActionComponent",
-          "left": 106,
-          "top": 32,
-          "width": 220,
-          "height": 57,
-          "customInputs": [],
-          "customOutputs": [],
-          "entries": [
-            {
-              "objID": "a38d3c45-9b49-4c2b-b131-1a1aa611d64b",
-              "variable": "set_volt",
-              "value": "set_volt+set_step"
-            }
-          ]
-        },
-        {
-          "objID": "72132e22-a940-4f92-a8b6-49b5eb037aac",
-          "type": "CompareActionComponent",
-          "left": 359,
-          "top": -207,
-          "width": 199,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "A": "set_curr",
-          "B": "set_curr_max",
-          "operator": ">"
-        },
-        {
-          "objID": "06f89dc6-26ef-424f-e582-2588ac334f60",
-          "type": "SetVariableActionComponent",
-          "left": 430,
-          "top": -85,
-          "width": 189,
-          "height": 57,
-          "customInputs": [],
-          "customOutputs": [],
-          "entries": [
-            {
-              "objID": "6ad7aefb-9884-4262-cfd9-1db3f31d6227",
-              "variable": "set_curr",
-              "value": "set_curr_max"
-            }
-          ]
-        },
-        {
-          "objID": "dba57ec3-10a9-4911-97d7-af525769ca6d",
-          "type": "CompareActionComponent",
-          "left": 359,
-          "top": 55,
-          "width": 199,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "A": "set_volt",
-          "B": "set_volt_max",
-          "operator": ">"
-        },
-        {
-          "objID": "6faf6bcf-340d-40e9-fcd1-7a8b9df56539",
-          "type": "SetVariableActionComponent",
-          "left": 369,
-          "top": 177,
-          "width": 189,
-          "height": 57,
-          "customInputs": [],
-          "customOutputs": [],
-          "entries": [
-            {
-              "objID": "896dfdd7-3fd6-4392-8861-75462ceff08b",
-              "variable": "set_volt",
-              "value": "set_volt_max"
-            }
-          ]
-        },
-        {
-          "objID": "7e09b7f6-6224-493b-b89f-3e8da914e171",
-          "type": "InputActionComponent",
-          "left": -396,
-          "top": -36,
-          "width": 96,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "name": "vc_sel_flag",
-          "inputType": "enum:vc_selction"
-        }
-      ],
-      "connectionLines": [
-        {
-          "objID": "7b99e237-f50c-4c4b-c300-e60ad4e72323",
-          "source": "06b43b88-a60b-408d-e84d-3cb2c9f8b3ad",
-          "output": "VOLT_SEL",
-          "target": "98563f64-3e87-4e2f-d6cf-b3df5d75caba",
-          "input": "@seqin"
-        },
-        {
-          "objID": "9e33cfdf-ed94-4ea8-dac5-c83f6ec67797",
-          "source": "06b43b88-a60b-408d-e84d-3cb2c9f8b3ad",
-          "output": "CURR_SEL",
-          "target": "010f74d1-7e90-45b0-bb67-3bc9a0a35acb",
-          "input": "@seqin"
-        },
-        {
-          "objID": "68adb591-c857-442a-a6d1-63f96f1d7727",
-          "source": "010f74d1-7e90-45b0-bb67-3bc9a0a35acb",
-          "output": "@seqout",
-          "target": "72132e22-a940-4f92-a8b6-49b5eb037aac",
-          "input": "@seqin"
-        },
-        {
-          "objID": "76793b46-3f9a-4b5c-cfc2-6673299e2824",
-          "source": "72132e22-a940-4f92-a8b6-49b5eb037aac",
-          "output": "True",
-          "target": "06f89dc6-26ef-424f-e582-2588ac334f60",
-          "input": "@seqin"
-        },
-        {
-          "objID": "c965b27f-835f-4ad3-b4c9-cb7a58afe070",
-          "source": "98563f64-3e87-4e2f-d6cf-b3df5d75caba",
-          "output": "@seqout",
-          "target": "dba57ec3-10a9-4911-97d7-af525769ca6d",
-          "input": "@seqin"
-        },
-        {
-          "objID": "570f85d7-4343-465b-eccd-a51e427307e2",
-          "source": "dba57ec3-10a9-4911-97d7-af525769ca6d",
-          "output": "True",
-          "target": "6faf6bcf-340d-40e9-fcd1-7a8b9df56539",
-          "input": "@seqin"
-        },
-        {
-          "objID": "95dcbfb5-e8cf-4ca3-e49c-c8d69254e197",
-          "source": "7e09b7f6-6224-493b-b89f-3e8da914e171",
-          "output": "@seqout",
-          "target": "06b43b88-a60b-408d-e84d-3cb2c9f8b3ad",
-          "input": "value"
-        }
-      ],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "add_set_value",
-      "implementationType": "flow"
-    },
-    {
-      "objID": "c414b238-6f61-410c-9afc-37ea4b28ae43",
-      "components": [
-        {
-          "objID": "00aab622-751a-4bce-c56b-19cb48c12691",
-          "type": "SwitchActionComponent",
-          "left": -239,
-          "top": -56,
-          "width": 309,
-          "height": 71,
-          "customInputs": [
-            {
-              "objID": "13e15015-5649-440b-e54b-4ac3bccb3674",
-              "name": "value",
-              "type": "enum:vc_selction"
-            }
-          ],
-          "customOutputs": [],
-          "tests": [
-            {
-              "objID": "9fdb0427-03d9-4d1a-c0b8-20243d895c7e",
-              "condition": "value==vc_selction.CURR_SEL",
-              "outputName": "CURR_SEL",
-              "outputValue": ""
-            },
-            {
-              "objID": "2b2a7d55-decf-42b2-eb9a-7b6f130b7096",
-              "condition": "value==vc_selction.VOLT_SEL",
-              "outputName": "VOLT_SEL",
-              "outputValue": ""
-            }
-          ]
-        },
-        {
-          "objID": "aa9b887d-13cb-486e-d4e5-a1ef306b43d8",
-          "type": "SetVariableActionComponent",
-          "left": 106,
-          "top": -65,
-          "width": 220,
-          "height": 57,
-          "customInputs": [],
-          "customOutputs": [],
-          "entries": [
-            {
-              "objID": "ce8bc9cb-75c0-4e36-c853-00b12714679c",
-              "variable": "set_curr",
-              "value": "set_curr-set_step"
-            }
-          ]
-        },
-        {
-          "objID": "b96cbbda-43e6-4c6e-e822-3104f667aa69",
-          "type": "SetVariableActionComponent",
-          "left": 106,
-          "top": 32,
-          "width": 220,
-          "height": 57,
-          "customInputs": [],
-          "customOutputs": [],
-          "entries": [
-            {
-              "objID": "405799af-c2f5-4fe6-bc9f-2b646ed58525",
-              "variable": "set_volt",
-              "value": "set_volt-set_step"
-            }
-          ]
-        },
-        {
-          "objID": "ae631354-6541-439d-f76c-c7478c764202",
-          "type": "CompareActionComponent",
-          "left": 359,
-          "top": -207,
-          "width": 199,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "A": "set_curr",
-          "B": "set_curr_max",
-          "operator": ">"
-        },
-        {
-          "objID": "6359cfa0-945a-44ca-d704-d6c97029b352",
-          "type": "SetVariableActionComponent",
-          "left": 430,
-          "top": -85,
-          "width": 189,
-          "height": 57,
-          "customInputs": [],
-          "customOutputs": [],
-          "entries": [
-            {
-              "objID": "eceb9da8-21de-4e6c-8efb-6c648a381e16",
-              "variable": "set_curr",
-              "value": "set_curr_max"
-            }
-          ]
-        },
-        {
-          "objID": "e9f33d90-c32d-4e9f-cfce-2d9d286cfa7e",
-          "type": "CompareActionComponent",
-          "left": 359,
-          "top": 55,
-          "width": 199,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "A": "set_volt",
-          "B": "set_volt_max",
-          "operator": ">"
-        },
-        {
-          "objID": "bdba7cff-2704-49c1-b344-f445a27f3b88",
-          "type": "SetVariableActionComponent",
-          "left": 369,
-          "top": 177,
-          "width": 189,
-          "height": 57,
-          "customInputs": [],
-          "customOutputs": [],
-          "entries": [
-            {
-              "objID": "300cb522-0306-4342-af18-2b53b3bfc4a0",
-              "variable": "set_volt",
-              "value": "set_volt_max"
-            }
-          ]
-        },
-        {
-          "objID": "dcb78966-f343-460d-eead-95c96fa801f4",
-          "type": "InputActionComponent",
-          "left": -382,
-          "top": -24,
-          "width": 96,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "name": "vc_sel_flag",
-          "inputType": "enum:vc_selction"
-        }
-      ],
-      "connectionLines": [
-        {
-          "objID": "da558e73-8b4a-4281-83db-a0e74f5d3c60",
-          "source": "00aab622-751a-4bce-c56b-19cb48c12691",
-          "output": "VOLT_SEL",
-          "target": "b96cbbda-43e6-4c6e-e822-3104f667aa69",
-          "input": "@seqin"
-        },
-        {
-          "objID": "5c316099-0407-4071-c76f-1223e05fdaeb",
-          "source": "00aab622-751a-4bce-c56b-19cb48c12691",
-          "output": "CURR_SEL",
-          "target": "aa9b887d-13cb-486e-d4e5-a1ef306b43d8",
-          "input": "@seqin"
-        },
-        {
-          "objID": "8e796631-7412-4c93-d040-6212e78babbe",
-          "source": "aa9b887d-13cb-486e-d4e5-a1ef306b43d8",
-          "output": "@seqout",
-          "target": "ae631354-6541-439d-f76c-c7478c764202",
-          "input": "@seqin"
-        },
-        {
-          "objID": "c3ffe09b-208f-4604-a1bd-39d4b5a83409",
-          "source": "ae631354-6541-439d-f76c-c7478c764202",
-          "output": "True",
-          "target": "6359cfa0-945a-44ca-d704-d6c97029b352",
-          "input": "@seqin"
-        },
-        {
-          "objID": "08d3d38b-b140-4f28-c7c1-88b5ccc90ac4",
-          "source": "b96cbbda-43e6-4c6e-e822-3104f667aa69",
-          "output": "@seqout",
-          "target": "e9f33d90-c32d-4e9f-cfce-2d9d286cfa7e",
-          "input": "@seqin"
-        },
-        {
-          "objID": "ec5ee9b4-482a-48af-a632-9e49873da648",
-          "source": "e9f33d90-c32d-4e9f-cfce-2d9d286cfa7e",
-          "output": "True",
-          "target": "bdba7cff-2704-49c1-b344-f445a27f3b88",
-          "input": "@seqin"
-        },
-        {
-          "objID": "c702badc-0693-4610-c976-90870d5166eb",
-          "source": "dcb78966-f343-460d-eead-95c96fa801f4",
-          "output": "@seqout",
-          "target": "00aab622-751a-4bce-c56b-19cb48c12691",
-          "input": "value"
-        }
-      ],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "sub_set_value",
-      "implementationType": "flow"
-    },
-    {
-      "objID": "156299c7-7b23-4cfa-fbf9-fcd97dc51116",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "init_power_module_status",
-      "implementationType": "native"
-    },
-    {
-      "objID": "f86afc6f-dfc8-4d6a-bc8a-2328573db667",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "init_root_setting_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "e8c7609d-79db-41c8-a57d-d3a241d8cdb2",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "update_root_setting_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "77fedad4-fde9-4af6-eb0d-d6fd44ef9af7",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "init_about_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "21ab6439-aaaf-400e-89de-8c7f5345ed53",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "update_about_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "38a3e6bb-48a9-4109-8125-8699bc7ed7c1",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "init_protect_limit_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "97be30d8-797e-4f11-9a85-a4272d947678",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "update_protect_limit_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "e5820927-55dd-405b-c3cc-35a4ee39d030",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "init_other_setting_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "dbb6e99d-4258-45f3-e302-ee731729eb25",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "update_other_setting_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "570c7b80-fb30-4d7b-ac73-567254e42b4d",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "init_recall_setting_page",
-      "implementationType": "native"
-    },
-    {
-      "objID": "73c57a51-bb74-4a6d-dbab-05bf539b9929",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "update_recall_setting_page",
-      "implementationType": "native"
-    }
-  ],
+  "actions": [],
   "userPages": [
     {
       "objID": "4b40eba7-b31a-468a-b887-11dfd0b6637f",
@@ -783,15 +282,7 @@
             "childStyles": []
           },
           "timeline": [],
-          "eventHandlers": [
-            {
-              "objID": "367adc6f-89b9-437d-97e3-1d8b50f483be",
-              "eventName": "SCREEN_LOAD_START",
-              "handlerType": "flow",
-              "action": "update_power_module_status",
-              "userData": 0
-            }
-          ],
+          "eventHandlers": [],
           "leftUnit": "px",
           "topUnit": "px",
           "widthUnit": "px",
@@ -1607,9 +1098,9 @@
               "objID": "ba1aec92-574d-4e28-f58a-7dbe5a0abd45",
               "type": "LVGLButtonWidget",
               "left": 40,
-              "top": 220,
+              "top": 214,
               "width": 60,
-              "height": 20,
+              "height": 26,
               "customInputs": [],
               "customOutputs": [],
               "style": {
@@ -1677,9 +1168,9 @@
                   "recolor": false
                 }
               ],
-              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+              "widgetFlags": "GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
               "hiddenFlagType": "literal",
-              "clickableFlag": true,
+              "clickableFlag": false,
               "clickableFlagType": "literal",
               "flagScrollbarMode": "",
               "flagScrollDirection": "",
@@ -1699,9 +1190,9 @@
               "objID": "161e945e-7b0d-4403-c6fb-e32a17871990",
               "type": "LVGLButtonWidget",
               "left": 130,
-              "top": 220,
+              "top": 214,
               "width": 60,
-              "height": 20,
+              "height": 26,
               "customInputs": [],
               "customOutputs": [],
               "style": {
@@ -1722,7 +1213,7 @@
                   "objID": "7a20fa5f-ea4b-4ba6-8694-157e9587da99",
                   "type": "LVGLLabelWidget",
                   "left": 0,
-                  "top": 0,
+                  "top": 1,
                   "width": 52,
                   "height": 16,
                   "customInputs": [],
@@ -1769,9 +1260,9 @@
                   "recolor": false
                 }
               ],
-              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+              "widgetFlags": "GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
               "hiddenFlagType": "literal",
-              "clickableFlag": true,
+              "clickableFlag": false,
               "clickableFlagType": "literal",
               "flagScrollbarMode": "",
               "flagScrollDirection": "",
@@ -1791,9 +1282,9 @@
               "objID": "c1ee3eee-4cb4-4fce-86dd-8136b5dacd5f",
               "type": "LVGLButtonWidget",
               "left": 220,
-              "top": 220,
+              "top": 214,
               "width": 60,
-              "height": 20,
+              "height": 26,
               "customInputs": [],
               "customOutputs": [],
               "style": {
@@ -1869,9 +1360,9 @@
                   "recolor": false
                 }
               ],
-              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+              "widgetFlags": "GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
               "hiddenFlagType": "literal",
-              "clickableFlag": true,
+              "clickableFlag": false,
               "clickableFlagType": "literal",
               "flagScrollbarMode": "",
               "flagScrollDirection": "",
@@ -1883,6 +1374,47 @@
               "useStyle": "bottom_button",
               "localStyles": {
                 "objID": "5482d28e-1da1-45b5-968c-87d26b0a4e41"
+              },
+              "group": "",
+              "groupIndex": 0
+            },
+            {
+              "objID": "184a00f9-28e8-4c46-a3a8-c58ee7f807f1",
+              "type": "LVGLListWidget",
+              "left": 7,
+              "top": 39,
+              "width": 305,
+              "height": 155,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "161feaac-d807-4db6-a74d-48289e1a7a6e",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "recall_list",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "px",
+              "heightUnit": "px",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlag": true,
+              "hiddenFlagType": "literal",
+              "clickableFlag": true,
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "localStyles": {
+                "objID": "a01de04e-7376-4e65-c856-6df1a922e616"
               },
               "group": "",
               "groupIndex": 0
@@ -1900,36 +1432,6 @@
             "objID": "b235a751-e421-97da-b4ac-d87e99438b26"
           },
           "groupIndex": 0
-        },
-        {
-          "objID": "074d90ea-1ea2-41bc-c93e-820ff78bb4fe",
-          "type": "CallActionActionComponent",
-          "left": 397,
-          "top": 145,
-          "width": 204,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "update_power_module_status",
-          "userPropertyValues": {
-            "objID": "1b699557-e37e-81bd-5b69-3aad448ef4aa",
-            "values": {}
-          }
-        },
-        {
-          "objID": "08b9449b-5f48-4c1d-982d-0ef552d046f6",
-          "type": "CallActionActionComponent",
-          "left": 375,
-          "top": 40,
-          "width": 182,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "init_power_module_status",
-          "userPropertyValues": {
-            "objID": "591b8075-546b-493c-b742-db0598f20166",
-            "values": {}
-          }
         },
         {
           "objID": "364d6f2c-06ae-4e20-f1ab-f887ed4904b3",
@@ -1956,71 +1458,14 @@
               "useStackType": "literal"
             }
           ]
-        },
-        {
-          "objID": "c2fa83af-5b23-4111-b572-34ac27c3ad16",
-          "type": "IsTrueActionComponent",
-          "left": 634,
-          "top": 145,
-          "width": 165,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "value": "Flow.isPageActive()"
-        },
-        {
-          "objID": "30945270-ac05-4f2d-aa4a-f9c3d54c004d",
-          "type": "DelayActionComponent",
-          "left": 834,
-          "top": 164,
-          "width": 87,
-          "height": 53,
-          "customInputs": [],
-          "customOutputs": [],
-          "milliseconds": "20"
         }
       ],
       "connectionLines": [
-        {
-          "objID": "45a9ccd4-177a-4c08-a48a-49ffc38844a4",
-          "source": "08b9449b-5f48-4c1d-982d-0ef552d046f6",
-          "output": "@seqout",
-          "target": "074d90ea-1ea2-41bc-c93e-820ff78bb4fe",
-          "input": "@seqin"
-        },
         {
           "objID": "c721448a-9289-4a12-8d3c-59ca67dfdfd1",
           "source": "c1ee3eee-4cb4-4fce-86dd-8136b5dacd5f",
           "output": "CLICKED",
           "target": "364d6f2c-06ae-4e20-f1ab-f887ed4904b3",
-          "input": "@seqin"
-        },
-        {
-          "objID": "694e68f7-674d-43fc-ff8b-cc677b6e99b5",
-          "source": "074d90ea-1ea2-41bc-c93e-820ff78bb4fe",
-          "output": "@seqout",
-          "target": "c2fa83af-5b23-4111-b572-34ac27c3ad16",
-          "input": "@seqin"
-        },
-        {
-          "objID": "9f4c86b5-d684-4597-d540-e68e35dbb29d",
-          "source": "30945270-ac05-4f2d-aa4a-f9c3d54c004d",
-          "output": "@seqout",
-          "target": "074d90ea-1ea2-41bc-c93e-820ff78bb4fe",
-          "input": "@seqin"
-        },
-        {
-          "objID": "6b33f35a-982f-4263-d59f-db2da039c71e",
-          "source": "c2fa83af-5b23-4111-b572-34ac27c3ad16",
-          "output": "True",
-          "target": "30945270-ac05-4f2d-aa4a-f9c3d54c004d",
-          "input": "@seqin"
-        },
-        {
-          "objID": "f9e18a7c-784b-47c2-a8ea-ea22a35b19d1",
-          "source": "82c6ba4c-7c4b-4db3-5260-2308417f6d4e",
-          "output": "SCREEN_LOAD_START",
-          "target": "08b9449b-5f48-4c1d-982d-0ef552d046f6",
           "input": "@seqin"
         }
       ],
@@ -2060,15 +1505,7 @@
             "childStyles": []
           },
           "timeline": [],
-          "eventHandlers": [
-            {
-              "objID": "c1df4121-4a98-43ad-8bd6-5152017d2c3c",
-              "eventName": "SCREEN_LOAD_START",
-              "handlerType": "flow",
-              "action": "update_power_module_status",
-              "userData": 0
-            }
-          ],
+          "eventHandlers": [],
           "leftUnit": "px",
           "topUnit": "px",
           "widthUnit": "px",
@@ -2127,9 +1564,9 @@
               "objID": "82aea1a4-f9f3-4cf9-b667-2ef524437a45",
               "type": "LVGLButtonWidget",
               "left": 40,
-              "top": 220,
+              "top": 214,
               "width": 60,
-              "height": 20,
+              "height": 26,
               "customInputs": [],
               "customOutputs": [],
               "style": {
@@ -2471,97 +1908,9 @@
             "objID": "f18e64c4-24ae-4f8c-8f8b-fce98ce21ad0"
           },
           "groupIndex": 0
-        },
-        {
-          "objID": "2f0752e9-f9bc-4b3c-beb3-9db63bbd8c30",
-          "type": "CallActionActionComponent",
-          "left": 395,
-          "top": 67,
-          "width": 124,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "init_about_page",
-          "userPropertyValues": {
-            "objID": "f5bfcf0d-52f7-4f45-aca1-e4574b80a088",
-            "values": {}
-          }
-        },
-        {
-          "objID": "2828c5cb-f69a-448e-c437-7c1fda05ba3a",
-          "type": "CallActionActionComponent",
-          "left": 373,
-          "top": 168,
-          "width": 146,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "update_about_page",
-          "userPropertyValues": {
-            "objID": "90b4c1a2-8fb5-43a2-9ec5-9244233421b4",
-            "values": {}
-          }
-        },
-        {
-          "objID": "2030c1a0-d372-4c6a-d4f2-5d148cc76e77",
-          "type": "DelayActionComponent",
-          "left": 763,
-          "top": 168,
-          "width": 87,
-          "height": 53,
-          "customInputs": [],
-          "customOutputs": [],
-          "milliseconds": "20"
-        },
-        {
-          "objID": "ba580c3b-7efe-4632-986a-90db89d37060",
-          "type": "IsTrueActionComponent",
-          "left": 562,
-          "top": 168,
-          "width": 165,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "value": "Flow.isPageActive()"
         }
       ],
-      "connectionLines": [
-        {
-          "objID": "741bf3c5-ff4a-4390-9282-7e3e8cf5aadd",
-          "source": "2f0752e9-f9bc-4b3c-beb3-9db63bbd8c30",
-          "output": "@seqout",
-          "target": "2828c5cb-f69a-448e-c437-7c1fda05ba3a",
-          "input": "@seqin"
-        },
-        {
-          "objID": "45b258d4-71b9-4a0c-fad1-5877f6595ffe",
-          "source": "2828c5cb-f69a-448e-c437-7c1fda05ba3a",
-          "output": "@seqout",
-          "target": "ba580c3b-7efe-4632-986a-90db89d37060",
-          "input": "@seqin"
-        },
-        {
-          "objID": "2b01053a-732f-46d8-f51b-6834fc8fc0e6",
-          "source": "2030c1a0-d372-4c6a-d4f2-5d148cc76e77",
-          "output": "@seqout",
-          "target": "2828c5cb-f69a-448e-c437-7c1fda05ba3a",
-          "input": "@seqin"
-        },
-        {
-          "objID": "3f2c6572-5809-4bc3-ac68-a94e30cc4bc2",
-          "source": "ba580c3b-7efe-4632-986a-90db89d37060",
-          "output": "True",
-          "target": "2030c1a0-d372-4c6a-d4f2-5d148cc76e77",
-          "input": "@seqin"
-        },
-        {
-          "objID": "0690fb10-8dfb-43d5-c50b-27c1140e71b9",
-          "source": "ab6c6022-d349-4794-9365-d101dd5d1e7c",
-          "output": "SCREEN_LOAD_START",
-          "target": "2f0752e9-f9bc-4b3c-beb3-9db63bbd8c30",
-          "input": "@seqin"
-        }
-      ],
+      "connectionLines": [],
       "localVariables": [],
       "userProperties": [],
       "name": "about_page",
@@ -2590,15 +1939,7 @@
             "childStyles": []
           },
           "timeline": [],
-          "eventHandlers": [
-            {
-              "objID": "0ff577e9-3557-4995-dda0-23a6e2d9750d",
-              "eventName": "SCREEN_LOAD_START",
-              "handlerType": "flow",
-              "action": "setting_page_preload",
-              "userData": 0
-            }
-          ],
+          "eventHandlers": [],
           "leftUnit": "px",
           "topUnit": "px",
           "widthUnit": "px",
@@ -2608,9 +1949,9 @@
               "objID": "cbb4eb47-296c-49b3-cdf0-1e0ff55dd50f",
               "type": "LVGLButtonWidget",
               "left": 40,
-              "top": 220,
+              "top": 214,
               "width": 60,
-              "height": 20,
+              "height": 26,
               "customInputs": [],
               "customOutputs": [],
               "style": {
@@ -2783,58 +2124,6 @@
               "useStackType": "literal"
             }
           ]
-        },
-        {
-          "objID": "b6527ab3-6391-43e5-e217-0283512836d2",
-          "type": "CallActionActionComponent",
-          "left": 389,
-          "top": 62,
-          "width": 159,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "init_root_setting_page",
-          "userPropertyValues": {
-            "objID": "36fe2da6-54e0-495e-cc6f-7bade93c2b03",
-            "values": {}
-          }
-        },
-        {
-          "objID": "b45eacbe-0a92-4652-a2a5-535895b4400a",
-          "type": "CallActionActionComponent",
-          "left": 367,
-          "top": 163,
-          "width": 181,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "update_root_setting_page",
-          "userPropertyValues": {
-            "objID": "de142960-d25e-416a-c377-8fa252c1b1dd",
-            "values": {}
-          }
-        },
-        {
-          "objID": "55cc8b52-c2f3-44c4-bee9-63e54a961b43",
-          "type": "DelayActionComponent",
-          "left": 757,
-          "top": 163,
-          "width": 87,
-          "height": 53,
-          "customInputs": [],
-          "customOutputs": [],
-          "milliseconds": "20"
-        },
-        {
-          "objID": "30fc4124-b70e-4a34-9a2e-88f491c01af3",
-          "type": "IsTrueActionComponent",
-          "left": 556,
-          "top": 163,
-          "width": 165,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "value": "Flow.isPageActive()"
         }
       ],
       "connectionLines": [
@@ -2843,41 +2132,6 @@
           "source": "cbb4eb47-296c-49b3-cdf0-1e0ff55dd50f",
           "output": "CLICKED",
           "target": "e2213822-5706-4ebd-c97a-6ddff2497660",
-          "input": "@seqin"
-        },
-        {
-          "objID": "9164d5c3-833e-44c7-edee-254eb724b5db",
-          "source": "bed68c96-4850-4a95-9478-79dc0aa13c73",
-          "output": "SCREEN_LOAD_START",
-          "target": "b6527ab3-6391-43e5-e217-0283512836d2",
-          "input": "@seqin"
-        },
-        {
-          "objID": "be6e5a7b-62b0-4aba-f0e5-443402f38bf0",
-          "source": "b6527ab3-6391-43e5-e217-0283512836d2",
-          "output": "@seqout",
-          "target": "b45eacbe-0a92-4652-a2a5-535895b4400a",
-          "input": "@seqin"
-        },
-        {
-          "objID": "2df89f68-299d-419d-9991-a2db68b6ef48",
-          "source": "b45eacbe-0a92-4652-a2a5-535895b4400a",
-          "output": "@seqout",
-          "target": "30fc4124-b70e-4a34-9a2e-88f491c01af3",
-          "input": "@seqin"
-        },
-        {
-          "objID": "b8ecf36d-1d3b-4e81-f984-a8b714792ca2",
-          "source": "55cc8b52-c2f3-44c4-bee9-63e54a961b43",
-          "output": "@seqout",
-          "target": "b45eacbe-0a92-4652-a2a5-535895b4400a",
-          "input": "@seqin"
-        },
-        {
-          "objID": "89c2b01f-7004-4e16-ab9e-3114037a289c",
-          "source": "30fc4124-b70e-4a34-9a2e-88f491c01af3",
-          "output": "True",
-          "target": "55cc8b52-c2f3-44c4-bee9-63e54a961b43",
           "input": "@seqin"
         }
       ],
@@ -2919,9 +2173,9 @@
               "objID": "4479dbce-b055-40c1-fb74-a4dcf4644f55",
               "type": "LVGLButtonWidget",
               "left": 40,
-              "top": 220,
+              "top": 214,
               "width": 60,
-              "height": 20,
+              "height": 26,
               "customInputs": [],
               "customOutputs": [],
               "style": {
@@ -3094,58 +2348,6 @@
               "useStackType": "literal"
             }
           ]
-        },
-        {
-          "objID": "0a9efd27-2817-4c17-bd5f-3ad8893ca67c",
-          "type": "CallActionActionComponent",
-          "left": 478,
-          "top": 60,
-          "width": 162,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "init_protect_limit_page",
-          "userPropertyValues": {
-            "objID": "6dc9731d-088a-440c-fab6-c4e1b1cb8221",
-            "values": {}
-          }
-        },
-        {
-          "objID": "8a768b14-8ae1-4f9f-995c-51c68291edc7",
-          "type": "CallActionActionComponent",
-          "left": 431,
-          "top": 161,
-          "width": 184,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "update_protect_limit_page",
-          "userPropertyValues": {
-            "objID": "d3d37570-b322-4c33-f9db-a0d7dd3efca9",
-            "values": {}
-          }
-        },
-        {
-          "objID": "96c0e492-639b-465f-9cc5-9c35048ed948",
-          "type": "DelayActionComponent",
-          "left": 846,
-          "top": 161,
-          "width": 87,
-          "height": 53,
-          "customInputs": [],
-          "customOutputs": [],
-          "milliseconds": "20"
-        },
-        {
-          "objID": "bde1dbbf-8f6f-4511-a742-2f5589f3eff0",
-          "type": "IsTrueActionComponent",
-          "left": 645,
-          "top": 161,
-          "width": 165,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "value": "Flow.isPageActive()"
         }
       ],
       "connectionLines": [
@@ -3154,34 +2356,6 @@
           "source": "4479dbce-b055-40c1-fb74-a4dcf4644f55",
           "output": "CLICKED",
           "target": "27ec2a73-422e-4b7b-9a66-3197d702e264",
-          "input": "@seqin"
-        },
-        {
-          "objID": "adaff52a-09f1-417f-e215-561aedcc9e5d",
-          "source": "0a9efd27-2817-4c17-bd5f-3ad8893ca67c",
-          "output": "@seqout",
-          "target": "8a768b14-8ae1-4f9f-995c-51c68291edc7",
-          "input": "@seqin"
-        },
-        {
-          "objID": "0bea229d-9d0d-4c0d-bd82-22b0082a1ecb",
-          "source": "8a768b14-8ae1-4f9f-995c-51c68291edc7",
-          "output": "@seqout",
-          "target": "bde1dbbf-8f6f-4511-a742-2f5589f3eff0",
-          "input": "@seqin"
-        },
-        {
-          "objID": "e131ebae-9522-4fd8-ac3b-ef64865bff9e",
-          "source": "96c0e492-639b-465f-9cc5-9c35048ed948",
-          "output": "@seqout",
-          "target": "8a768b14-8ae1-4f9f-995c-51c68291edc7",
-          "input": "@seqin"
-        },
-        {
-          "objID": "fd7ba874-94ee-4f37-e8ee-8da8105e7b25",
-          "source": "bde1dbbf-8f6f-4511-a742-2f5589f3eff0",
-          "output": "True",
-          "target": "96c0e492-639b-465f-9cc5-9c35048ed948",
           "input": "@seqin"
         }
       ],
@@ -3213,15 +2387,7 @@
             "childStyles": []
           },
           "timeline": [],
-          "eventHandlers": [
-            {
-              "objID": "a54c718a-5618-4aaa-d423-262b38b290b0",
-              "eventName": "SCREEN_LOAD_START",
-              "handlerType": "flow",
-              "action": "update_power_module_status",
-              "userData": 0
-            }
-          ],
+          "eventHandlers": [],
           "leftUnit": "px",
           "topUnit": "px",
           "widthUnit": "px",
@@ -3231,9 +2397,9 @@
               "objID": "08ac69f4-e80f-49a3-b2d0-b436a66190d6",
               "type": "LVGLButtonWidget",
               "left": 40,
-              "top": 220,
+              "top": 214,
               "width": 60,
-              "height": 20,
+              "height": 26,
               "customInputs": [],
               "customOutputs": [],
               "style": {
@@ -3406,58 +2572,6 @@
               "useStackType": "literal"
             }
           ]
-        },
-        {
-          "objID": "69b9ee6c-c3da-467b-cc4b-813d0dc98a5c",
-          "type": "CallActionActionComponent",
-          "left": 421,
-          "top": 52,
-          "width": 166,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "init_other_setting_page",
-          "userPropertyValues": {
-            "objID": "d56c92ca-6d34-4c5c-fe77-1a7898b210e8",
-            "values": {}
-          }
-        },
-        {
-          "objID": "ca9788ff-58e6-4203-870a-ad7c9fcee267",
-          "type": "CallActionActionComponent",
-          "left": 399,
-          "top": 153,
-          "width": 188,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "update_other_setting_page",
-          "userPropertyValues": {
-            "objID": "8084457a-422e-456d-e795-812fa59190da",
-            "values": {}
-          }
-        },
-        {
-          "objID": "73f7d79e-6340-4ad5-8256-beba68b6da0a",
-          "type": "DelayActionComponent",
-          "left": 829,
-          "top": 150,
-          "width": 87,
-          "height": 53,
-          "customInputs": [],
-          "customOutputs": [],
-          "milliseconds": "20"
-        },
-        {
-          "objID": "1e2b0556-c15b-4ae3-e647-888ab685f62d",
-          "type": "IsTrueActionComponent",
-          "left": 617,
-          "top": 153,
-          "width": 165,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "value": "Flow.isPageActive()"
         }
       ],
       "connectionLines": [
@@ -3467,309 +2581,11 @@
           "output": "CLICKED",
           "target": "6859d1ec-7180-4e68-d92d-c93e5e6563e3",
           "input": "@seqin"
-        },
-        {
-          "objID": "3c8ccc4a-a395-4b01-b7db-f3c8e2244cac",
-          "source": "69b9ee6c-c3da-467b-cc4b-813d0dc98a5c",
-          "output": "@seqout",
-          "target": "ca9788ff-58e6-4203-870a-ad7c9fcee267",
-          "input": "@seqin"
-        },
-        {
-          "objID": "a03a4074-bcf8-4c74-bd74-2b573f483c46",
-          "source": "ca9788ff-58e6-4203-870a-ad7c9fcee267",
-          "output": "@seqout",
-          "target": "1e2b0556-c15b-4ae3-e647-888ab685f62d",
-          "input": "@seqin"
-        },
-        {
-          "objID": "b7087504-d9ab-417f-e1fa-e26a798f9ccf",
-          "source": "73f7d79e-6340-4ad5-8256-beba68b6da0a",
-          "output": "@seqout",
-          "target": "ca9788ff-58e6-4203-870a-ad7c9fcee267",
-          "input": "@seqin"
-        },
-        {
-          "objID": "c94e8aba-7c64-4fe9-af33-e45ab9e947d8",
-          "source": "1e2b0556-c15b-4ae3-e647-888ab685f62d",
-          "output": "True",
-          "target": "73f7d79e-6340-4ad5-8256-beba68b6da0a",
-          "input": "@seqin"
-        },
-        {
-          "objID": "50c38de1-91da-4a8a-fbb8-6426030d0289",
-          "source": "44e1f764-b087-4b82-878f-078df27831d3",
-          "output": "SCREEN_LOAD_START",
-          "target": "69b9ee6c-c3da-467b-cc4b-813d0dc98a5c",
-          "input": "@seqin"
         }
       ],
       "localVariables": [],
       "userProperties": [],
       "name": "other_setting_page",
-      "left": 0,
-      "top": 0,
-      "width": 320,
-      "height": 240,
-      "isUsedAsUserWidget": false
-    },
-    {
-      "objID": "77359dcb-5788-42f3-dbef-367c048e7939",
-      "components": [
-        {
-          "objID": "e60f692f-14b9-43e6-e555-53c19bf196fa",
-          "type": "LVGLScreenWidget",
-          "left": 0,
-          "top": 0,
-          "width": 320,
-          "height": 240,
-          "customInputs": [],
-          "customOutputs": [],
-          "style": {
-            "objID": "203e2787-d3f3-4a83-d600-e6bd87561067",
-            "useStyle": "default",
-            "conditionalStyles": [],
-            "childStyles": []
-          },
-          "timeline": [],
-          "eventHandlers": [],
-          "leftUnit": "px",
-          "topUnit": "px",
-          "widthUnit": "px",
-          "heightUnit": "px",
-          "children": [
-            {
-              "objID": "aa4ec021-a12c-47b2-d3df-b1923d277bbf",
-              "type": "LVGLButtonWidget",
-              "left": 40,
-              "top": 220,
-              "width": 60,
-              "height": 20,
-              "customInputs": [],
-              "customOutputs": [],
-              "style": {
-                "objID": "6fa0d8b9-e09b-4ae9-84d6-3ee8cd50b902",
-                "useStyle": "default",
-                "conditionalStyles": [],
-                "childStyles": []
-              },
-              "timeline": [],
-              "eventHandlers": [
-                {
-                  "objID": "623a8739-3bd2-4eed-b663-7d1c847ccf57",
-                  "eventName": "CLICKED",
-                  "handlerType": "flow",
-                  "action": "update_power_module_status",
-                  "userData": 0
-                }
-              ],
-              "leftUnit": "px",
-              "topUnit": "px",
-              "widthUnit": "px",
-              "heightUnit": "px",
-              "children": [
-                {
-                  "objID": "ee00522f-77c8-4467-aff9-847bf9901b8a",
-                  "type": "LVGLLabelWidget",
-                  "left": 0,
-                  "top": 0,
-                  "width": 36,
-                  "height": 16,
-                  "customInputs": [],
-                  "customOutputs": [],
-                  "style": {
-                    "objID": "19d34a9b-bdbd-468c-81df-481952b0dd54",
-                    "useStyle": "default",
-                    "conditionalStyles": [],
-                    "childStyles": []
-                  },
-                  "timeline": [],
-                  "eventHandlers": [],
-                  "leftUnit": "px",
-                  "topUnit": "px",
-                  "widthUnit": "content",
-                  "heightUnit": "content",
-                  "children": [],
-                  "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
-                  "hiddenFlagType": "literal",
-                  "clickableFlagType": "literal",
-                  "flagScrollbarMode": "",
-                  "flagScrollDirection": "",
-                  "scrollSnapX": "",
-                  "scrollSnapY": "",
-                  "checkedStateType": "literal",
-                  "disabledStateType": "literal",
-                  "states": "",
-                  "localStyles": {
-                    "objID": "c0ce4681-29ac-49fa-94d8-590c71996f3f",
-                    "definition": {
-                      "MAIN": {
-                        "DEFAULT": {
-                          "align": "CENTER",
-                          "text_font": "MONTSERRAT_14"
-                        }
-                      }
-                    }
-                  },
-                  "group": "",
-                  "groupIndex": 0,
-                  "text": "Back",
-                  "textType": "literal",
-                  "longMode": "WRAP",
-                  "recolor": false
-                }
-              ],
-              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
-              "hiddenFlagType": "literal",
-              "clickableFlag": true,
-              "clickableFlagType": "literal",
-              "flagScrollbarMode": "",
-              "flagScrollDirection": "",
-              "scrollSnapX": "",
-              "scrollSnapY": "",
-              "checkedStateType": "literal",
-              "disabledStateType": "literal",
-              "states": "",
-              "useStyle": "bottom_button",
-              "localStyles": {
-                "objID": "68348e45-bc30-4289-9bb0-ecf5890d6b1d"
-              },
-              "group": "",
-              "groupIndex": 0
-            }
-          ],
-          "widgetFlags": "CLICKABLE|PRESS_LOCK|CLICK_FOCUSABLE|GESTURE_BUBBLE|SNAPPABLE|SCROLLABLE|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER",
-          "hiddenFlagType": "literal",
-          "clickableFlag": true,
-          "clickableFlagType": "literal",
-          "checkedStateType": "literal",
-          "disabledStateType": "literal",
-          "states": "",
-          "useStyle": "basic_screen_style",
-          "localStyles": {
-            "objID": "670aa0f9-6180-4f6b-8371-28d7797277ee"
-          },
-          "groupIndex": 0
-        },
-        {
-          "objID": "6131dbb6-6433-43c1-db66-fd7f23405cd4",
-          "type": "LVGLActionComponent",
-          "left": -45,
-          "top": 270,
-          "width": 366,
-          "height": 53,
-          "customInputs": [],
-          "customOutputs": [],
-          "actions": [
-            {
-              "objID": "5b5f0143-54f2-4b3b-b4e8-dc4b68b8af93",
-              "action": "changeScreen",
-              "screen": "root_setting_page",
-              "screenType": "literal",
-              "fadeMode": "FADE_IN",
-              "fadeModeType": "literal",
-              "speed": 200,
-              "speedType": "literal",
-              "delay": 0,
-              "delayType": "literal",
-              "useStack": true,
-              "useStackType": "literal"
-            }
-          ]
-        },
-        {
-          "objID": "0de77598-4b74-40d1-f0bb-82e8f89d9eff",
-          "type": "CallActionActionComponent",
-          "left": 468,
-          "top": 68,
-          "width": 167,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "init_recall_setting_page",
-          "userPropertyValues": {
-            "objID": "365e06ef-7a8e-4a8c-97de-03053ffe3cba",
-            "values": {}
-          }
-        },
-        {
-          "objID": "cceaf8c8-6994-4e0a-f6b3-a97831ef3e85",
-          "type": "CallActionActionComponent",
-          "left": 424,
-          "top": 169,
-          "width": 189,
-          "height": 24,
-          "customInputs": [],
-          "customOutputs": [],
-          "action": "update_recall_setting_page",
-          "userPropertyValues": {
-            "objID": "cd5f2e99-9a70-4a7f-b3c8-67f3f1865f41",
-            "values": {}
-          }
-        },
-        {
-          "objID": "48f33e7c-bb9e-4176-be35-930b2cd98ec3",
-          "type": "DelayActionComponent",
-          "left": 836,
-          "top": 169,
-          "width": 87,
-          "height": 53,
-          "customInputs": [],
-          "customOutputs": [],
-          "milliseconds": "20"
-        },
-        {
-          "objID": "1a1bbda5-f66a-4a91-8644-7c798d212874",
-          "type": "IsTrueActionComponent",
-          "left": 635,
-          "top": 169,
-          "width": 165,
-          "height": 69,
-          "customInputs": [],
-          "customOutputs": [],
-          "value": "Flow.isPageActive()"
-        }
-      ],
-      "connectionLines": [
-        {
-          "objID": "3935b015-4b24-40d5-a4ff-c44e05b4d969",
-          "source": "aa4ec021-a12c-47b2-d3df-b1923d277bbf",
-          "output": "CLICKED",
-          "target": "6131dbb6-6433-43c1-db66-fd7f23405cd4",
-          "input": "@seqin"
-        },
-        {
-          "objID": "e28c306b-0288-4d43-c40b-ace83ea94a2f",
-          "source": "0de77598-4b74-40d1-f0bb-82e8f89d9eff",
-          "output": "@seqout",
-          "target": "cceaf8c8-6994-4e0a-f6b3-a97831ef3e85",
-          "input": "@seqin"
-        },
-        {
-          "objID": "96a05708-b251-449f-9d71-11e65d75740c",
-          "source": "cceaf8c8-6994-4e0a-f6b3-a97831ef3e85",
-          "output": "@seqout",
-          "target": "1a1bbda5-f66a-4a91-8644-7c798d212874",
-          "input": "@seqin"
-        },
-        {
-          "objID": "7cc2951e-f889-414c-bd42-7eabaf432c5f",
-          "source": "48f33e7c-bb9e-4176-be35-930b2cd98ec3",
-          "output": "@seqout",
-          "target": "cceaf8c8-6994-4e0a-f6b3-a97831ef3e85",
-          "input": "@seqin"
-        },
-        {
-          "objID": "ed9a1ae4-3080-4ab4-8c8f-883e9f1ee4df",
-          "source": "1a1bbda5-f66a-4a91-8644-7c798d212874",
-          "output": "True",
-          "target": "48f33e7c-bb9e-4176-be35-930b2cd98ec3",
-          "input": "@seqin"
-        }
-      ],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "recall_setting_page",
       "left": 0,
       "top": 0,
       "width": 320,
@@ -4005,9 +2821,13 @@
             "MAIN": {
               "DEFAULT": {
                 "bg_color": "767676",
-                "radius": 5,
                 "text_font": "roboto_14",
-                "text_color": "#ffffff"
+                "text_color": "#ffffff",
+                "shadow_width": 0,
+                "radius": 5
+              },
+              "FOCUS_KEY": {
+                "outline_width": 0
               }
             }
           }

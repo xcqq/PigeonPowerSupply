@@ -1,37 +1,51 @@
 #include "other_setting_page.h"
+#include "./root_setting_page.h"
+#include "user_actions.h"
 
-void OtherSettingPage::init()
+const std::string OtherSettingPage::PAGE_NAME = "other_setting";
+
+void OtherSettingPage::onInit()
 {
     lv_obj_t *other_setting_list = objects.other_setting_list;
-    other_setting_group = lv_group_create();
-    lv_obj_clean(other_setting_list);
     JsonVariant config = io.get_config_json();
-    beep_setting_item = new BoolSettingItem("Buzzer", config["user_preferences"]["buzzer"], io, [](ConfigSettingItem<bool> *item, io_service &io) {
-        io.set_buzzer(item->getValue());
-    });
-    lv_obj_t *btn = beep_setting_item->render(other_setting_list);
+    if (other_setting_list) {
+        lv_obj_clean(other_setting_list);
+    }
+    other_setting_group = lv_group_create();
+    lv_group_remove_all_objs(other_setting_group);
 
-    brightness_setting_item =
-        new IntSettingItem("Brightness", config["user_preferences"]["brightness"], io, [](ConfigSettingItem<int> *item, io_service &io) {
-            io.set_brightness(item->getValue());
-        });
+    beep_setting_item = new BoolSettingItem(
+        "Buzzer", config["user_preferences"]["buzzer"], io,
+        [](ConfigSettingItem<bool> *item, io_service &io) { io.set_buzzer(item->getValue()); });
+    lv_obj_t *btn_beep = beep_setting_item->render(other_setting_list);
+    lv_group_add_obj(other_setting_group, btn_beep);
+
+    brightness_setting_item = new IntSettingItem(
+        "Brightness", config["user_preferences"]["brightness"], io,
+        [](ConfigSettingItem<int> *item, io_service &io) { io.set_brightness(item->getValue()); });
     lv_obj_t *btn_brightness = brightness_setting_item->render(other_setting_list);
+    lv_group_add_obj(other_setting_group, btn_brightness);
 
     refresh_rate_setting_item =
         new ListSettingItem("Refresh Rate", config["user_preferences"]["refresh_rate"], io, NULL);
     lv_obj_t *btn_refresh_rate = refresh_rate_setting_item->render(other_setting_list);
-
-    language_setting_item = new ListSettingItem("Language", config["user_preferences"]["language"], io, NULL);
-    lv_obj_t *btn_language = language_setting_item->render(other_setting_list);
-
-    lv_group_remove_all_objs(other_setting_group);
-    lv_group_add_obj(other_setting_group, btn);
-    lv_group_add_obj(other_setting_group, btn_brightness);
     lv_group_add_obj(other_setting_group, btn_refresh_rate);
+
+    language_setting_item =
+        new ListSettingItem("Language", config["user_preferences"]["language"], io, NULL);
+    lv_obj_t *btn_language = language_setting_item->render(other_setting_list);
     lv_group_add_obj(other_setting_group, btn_language);
+
     lv_group_set_wrap(other_setting_group, false);
 
-    lv_group_focus_obj(btn);
+    lv_group_focus_obj(btn_beep);
+    current_selected_btn = nullptr;
+}
+
+void OtherSettingPage::onEnter()
+{
+    lv_group_focus_obj(beep_setting_item->getObj());
+    current_selected_btn = nullptr;
 }
 
 void OtherSettingPage::handle_encoder(const hmi_module_status &hmi_status)
@@ -85,8 +99,7 @@ void OtherSettingPage::handle_short_press(uint8_t keys)
         if (current_selected_btn) {
             current_selected_btn = nullptr;
         } else {
-            io.save_config();
-            eez_flow_set_screen(SCREEN_ID_ROOT_SETTING_PAGE, LV_SCR_LOAD_ANIM_FADE_IN, 200, 0);
+            user_actions.goBack();
         }
         break;
     default:
@@ -95,11 +108,18 @@ void OtherSettingPage::handle_short_press(uint8_t keys)
     io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
-void OtherSettingPage::update()
+void OtherSettingPage::update() {}
+
+void OtherSettingPage::onExit() { io.save_config(); }
+
+void OtherSettingPage::onDestroy()
 {
-    hmi_module_status hmi_status = io.get_hmi_module_status();
-    handle_encoder(hmi_status);
-    uint8_t keys;
-    key_state state = io.get_key_state(keys);
-    if (state == KEY_PRESSED) handle_short_press(keys);
+    if (other_setting_list) {
+        lv_obj_clean(other_setting_list);
+    }
+    if (other_setting_group) {
+        lv_group_remove_all_objs(other_setting_group);
+        lv_group_del(other_setting_group);
+        other_setting_group = nullptr;
+    }
 }

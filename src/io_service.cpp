@@ -240,6 +240,7 @@ void IRAM_ATTR io_service::loop()
     power_module_sync();
     hmi_module_sync();
     M5.update();
+    delay(10);
 }
 
 key_state IRAM_ATTR io_service::get_key_state(uint8_t &keys) {

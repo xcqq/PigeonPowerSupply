@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
 #include "../page.h"
 #include "setting_item.h"
+#include <string>
 
 using std::string;
 
@@ -18,9 +18,15 @@ private:
     ListSettingItem *language_setting_item;
 
 public:
-    OtherSettingPage(io_service &io_service) : Page(io_service) {}
-    void init() override;
+    static const std::string PAGE_NAME;
+    static const int SCREEN_ID = SCREEN_ID_OTHER_SETTING_PAGE;
+    OtherSettingPage(UserActions &user_actions, io_service &io) : Page(user_actions, io) {}
+    void onInit() override;
+    void onEnter() override;
     void update() override;
     void handle_short_press(uint8_t keys) override;
     void handle_encoder(const hmi_module_status &hmi_status) override;
+    void onExit() override;
+    void onDestroy() override;
+    int getScreenId() const override { return SCREEN_ID_OTHER_SETTING_PAGE; }
 };

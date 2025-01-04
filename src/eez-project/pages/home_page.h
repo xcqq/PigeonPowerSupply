@@ -9,6 +9,7 @@ private:
     JsonArray recall_settings;
     bool recall_list_open = false;
     lv_group_t* recall_group;
+    lv_obj_t* recall_list;
 
     void update_settings(float set_volt, float set_curr);
     void toggle_output();
@@ -23,10 +24,14 @@ private:
     void load_recall_settings_list(lv_obj_t* list);
 
 public:
-    HomePage(io_service& io_service)
-        : Page(io_service) {}
+    static const std::string PAGE_NAME;
+    int getScreenId() const override { return SCREEN_ID_HOME_PAGE; }
+    
+    HomePage(UserActions& user_actions, io_service& io)
+        : Page(user_actions, io) {}
         
-    void init() override;
+    void onInit() override;
+    void onEnter() override;
     void update() override;
     void handle_short_press(uint8_t keys) override;
     void handle_long_press(uint8_t keys) override;

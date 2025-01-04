@@ -1,6 +1,10 @@
 #include "protect_limit_page.h"
+#include "user_actions.h"
 
-void ProtectLimitPage::init() {
+const std::string ProtectLimitPage::PAGE_NAME = "protect_limit";
+
+void ProtectLimitPage::onInit()
+{
     lv_obj_t *protect_limit_list = objects.protect_limit_list;
     protect_limit_group = lv_group_create();
     lv_obj_clean(protect_limit_list);
@@ -8,39 +12,44 @@ void ProtectLimitPage::init() {
     lv_group_set_wrap(protect_limit_group, false);
 
     JsonVariant config = io.get_config_json();
-    current_limit_item = new FloatSettingItem("Current Limit", config["protection_limits"]["current_limit"], io, [](ConfigSettingItem<float> *item, io_service &io) {
-        io.set_current_limit(item->getValue());
-    });
+    current_limit_item =
+        new FloatSettingItem("Current Limit", config["protection_limits"]["current_limit"], io,
+                             [](ConfigSettingItem<float> *item, io_service &io) {
+                                 io.set_current_limit(item->getValue());
+                             });
     lv_obj_t *current_limit_item_obj = current_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, current_limit_item_obj);
-    voltage_limit_item = new FloatSettingItem("Voltage Limit", config["protection_limits"]["voltage_limit"], io, [](ConfigSettingItem<float> *item, io_service &io) {
-        io.set_voltage_limit(item->getValue());
-    });
+
+    voltage_limit_item =
+        new FloatSettingItem("Voltage Limit", config["protection_limits"]["voltage_limit"], io,
+                             [](ConfigSettingItem<float> *item, io_service &io) {
+                                 io.set_voltage_limit(item->getValue());
+                             });
     lv_obj_t *voltage_limit_item_obj = voltage_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, voltage_limit_item_obj);
-    power_limit_item = new IntSettingItem("Power Limit", config["protection_limits"]["power_limit"], io, [](ConfigSettingItem<int> *item, io_service &io) {
-        io.set_power_limit(item->getValue());
-    });
+
+    power_limit_item = new IntSettingItem(
+        "Power Limit", config["protection_limits"]["power_limit"], io,
+        [](ConfigSettingItem<int> *item, io_service &io) { io.set_power_limit(item->getValue()); });
     lv_obj_t *power_limit_item_obj = power_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, power_limit_item_obj);
-    temperature_limit_item = new IntSettingItem("Temperature Limit", config["protection_limits"]["temperature_limit"], io, [](ConfigSettingItem<int> *item, io_service &io) {
-        io.set_temperature_limit(item->getValue());
-    });
+
+    temperature_limit_item =
+        new IntSettingItem("Temperature Limit", config["protection_limits"]["temperature_limit"],
+                           io, [](ConfigSettingItem<int> *item, io_service &io) {
+                               io.set_temperature_limit(item->getValue());
+                           });
     lv_obj_t *temperature_limit_item_obj = temperature_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, temperature_limit_item_obj);
 
     lv_group_focus_obj(current_limit_item_obj);
+    current_selected_btn = nullptr;
 }
 
-void ProtectLimitPage::update() {
-    hmi_module_status hmi_status = io.get_hmi_module_status();
-    handle_encoder(hmi_status);
-    uint8_t keys;
-    key_state state = io.get_key_state(keys);
-    if (state == KEY_PRESSED) handle_short_press(keys);
-}
+void ProtectLimitPage::update() {}
 
-void ProtectLimitPage::handle_encoder(const hmi_module_status &hmi_status) {
+void ProtectLimitPage::handle_encoder(const hmi_module_status &hmi_status)
+{
     lv_key_t key = 0;
     if (!hmi_status.encoder_inc) return;
 
@@ -64,37 +73,51 @@ void ProtectLimitPage::handle_encoder(const hmi_module_status &hmi_status) {
     io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
-void ProtectLimitPage::handle_short_press(uint8_t keys) {
+void ProtectLimitPage::handle_short_press(uint8_t keys)
+{
     Serial.print(F("[INFO] Protect limit page key pressed: "));
     Serial.println(keys);
     lv_obj_t *focused_obj = nullptr;
 
     switch (keys) {
-        case KEY_HMI_S:
-            if (current_selected_btn) {
-                current_selected_btn = nullptr;
-            } else {
-                focused_obj = lv_group_get_focused(protect_limit_group);
-                if (focused_obj) {
-                    if (auto item = (ConfigSettingItem<int> *)lv_obj_get_user_data(focused_obj)) {
-                        if (item->can_select()) {
-                            current_selected_btn = focused_obj;
-                        } else {
-                            lv_group_send_data(protect_limit_group, LV_KEY_ENTER);
-                        }
+    case KEY_HMI_S:
+        if (current_selected_btn) {
+            current_selected_btn = nullptr;
+        } else {
+            focused_obj = lv_group_get_focused(protect_limit_group);
+            if (focused_obj) {
+                if (auto item = (ConfigSettingItem<int> *)lv_obj_get_user_data(focused_obj)) {
+                    if (item->can_select()) {
+                        current_selected_btn = focused_obj;
+                    } else {
+                        lv_group_send_data(protect_limit_group, LV_KEY_ENTER);
                     }
                 }
             }
-            break;
-        case KEY_M5_A:
-            if (current_selected_btn) {
-                current_selected_btn = nullptr;
-            } else {
-                eez_flow_set_screen(SCREEN_ID_ROOT_SETTING_PAGE, LV_SCR_LOAD_ANIM_FADE_IN, 200, 0);
-            }
-            break;
-        default:
-            break;
+        }
+        break;
+    case KEY_M5_A:
+        if (current_selected_btn) {
+            current_selected_btn = nullptr;
+        } else {
+            user_actions.goBack();
+        }
+        break;
+    default:
+        break;
     }
 }
 
+void ProtectLimitPage::onExit() { io.save_config(); }
+
+void ProtectLimitPage::onDestroy()
+{
+    if (protect_limit_list) {
+        lv_obj_clean(protect_limit_list);
+    }
+    if (protect_limit_group) {
+        lv_group_remove_all_objs(protect_limit_group);
+        lv_group_del(protect_limit_group);
+        protect_limit_group = nullptr;
+    }
+}

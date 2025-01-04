@@ -17,26 +17,26 @@ void BoolSettingItem::setting_item_event_cb(lv_event_t *e)
 
 lv_obj_t *BoolSettingItem::render(lv_obj_t *parent)
 {
-    btn = lv_list_add_btn(parent, NULL, NULL);
-    lv_obj_set_user_data(btn, this);
-    lv_obj_set_flex_flow(btn, LV_FLEX_FLOW_ROW);
-    lv_obj_set_height(btn, 60);
-    lv_obj_set_flex_align(btn, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    obj = lv_list_add_btn(parent, NULL, NULL);
+    lv_obj_set_user_data(obj, this);
+    lv_obj_set_flex_flow(obj, LV_FLEX_FLOW_ROW);
+    lv_obj_set_height(obj, 60);
+    lv_obj_set_flex_align(obj, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     // symbol icon
-    lv_obj_t *icon = lv_label_create(btn);
+    lv_obj_t *icon = lv_label_create(obj);
     lv_label_set_text(icon, "");
     lv_obj_set_flex_grow(icon, 2);
     // label
-    lv_obj_t *label = lv_label_create(btn);
+    lv_obj_t *label = lv_label_create(obj);
     lv_label_set_text(label, title);
     lv_obj_set_flex_grow(label, 8);
     // switch
-    btn_switch = lv_switch_create(btn);
+    btn_switch = lv_switch_create(obj);
     lv_obj_set_flex_grow(btn_switch, 3);
     lv_obj_set_height(btn_switch, 26);
 
     lv_obj_add_event_cb(
-        btn,
+        obj,
         [](lv_event_t *e) {
             auto item = (BoolSettingItem *)lv_event_get_user_data(e);
             item->setting_item_event_cb(e);
@@ -50,8 +50,8 @@ lv_obj_t *BoolSettingItem::render(lv_obj_t *parent)
     } else {
         lv_obj_clear_state(btn_switch, LV_STATE_CHECKED);
     }
-    lv_obj_set_user_data(btn, this);
-    return btn;
+    lv_obj_set_user_data(obj, this);
+    return obj;
 }
 
 void IntSettingItem::setting_item_event_cb(lv_event_t *e)
@@ -94,21 +94,21 @@ void IntSettingItem::setting_item_event_cb(lv_event_t *e)
 
 lv_obj_t *IntSettingItem::render(lv_obj_t *parent)
 {
-    btn = lv_list_add_btn(parent, NULL, NULL);
-    lv_obj_set_user_data(btn, this);
-    lv_obj_set_flex_flow(btn, LV_FLEX_FLOW_ROW);
-    lv_obj_set_height(btn, 60);
-    lv_obj_set_flex_align(btn, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    obj = lv_list_add_btn(parent, NULL, NULL);
+    lv_obj_set_user_data(obj, this);
+    lv_obj_set_flex_flow(obj, LV_FLEX_FLOW_ROW);
+    lv_obj_set_height(obj, 60);
+    lv_obj_set_flex_align(obj, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     // symbol icon
-    lv_obj_t *icon = lv_label_create(btn);
+    lv_obj_t *icon = lv_label_create(obj);
     lv_label_set_text(icon, "");
     lv_obj_set_flex_grow(icon, 2);
     // label
-    lv_obj_t *label = lv_label_create(btn);
+    lv_obj_t *label = lv_label_create(obj);
     lv_label_set_text(label, title);
     lv_obj_set_flex_grow(label, 8);
     // spinbox
-    value_spinbox = lv_spinbox_create(btn);
+    value_spinbox = lv_spinbox_create(obj);
     lv_spinbox_set_range(value_spinbox, min, max);
     lv_spinbox_set_step(value_spinbox, step);
     int digit_count = 1;
@@ -125,7 +125,7 @@ lv_obj_t *IntSettingItem::render(lv_obj_t *parent)
     add_style_setting_spinbox_style(value_spinbox);
 
     lv_obj_add_event_cb(
-        btn,
+        obj,
         [](lv_event_t *e) {
             auto item = (IntSettingItem *)lv_event_get_user_data(e);
             item->setting_item_event_cb(e);
@@ -135,7 +135,7 @@ lv_obj_t *IntSettingItem::render(lv_obj_t *parent)
         },
         LV_EVENT_KEY, this);
 
-    return btn;
+    return obj;
 }
 
 void FloatSettingItem::setting_item_event_cb(lv_event_t *e)
@@ -163,22 +163,22 @@ void FloatSettingItem::setting_item_event_cb(lv_event_t *e)
 
 lv_obj_t *FloatSettingItem::render(lv_obj_t *parent)
 {
-    btn = lv_list_add_btn(parent, NULL, NULL);
-    lv_obj_set_user_data(btn, this);
+    obj = lv_list_add_btn(parent, NULL, NULL);
+    lv_obj_set_user_data(obj, this);
 
-    lv_obj_set_flex_flow(btn, LV_FLEX_FLOW_ROW);
-    lv_obj_set_height(btn, 60);
-    lv_obj_set_flex_align(btn, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_flex_flow(obj, LV_FLEX_FLOW_ROW);
+    lv_obj_set_height(obj, 60);
+    lv_obj_set_flex_align(obj, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     // symbol icon
-    lv_obj_t *icon = lv_label_create(btn);
+    lv_obj_t *icon = lv_label_create(obj);
     lv_label_set_text(icon, "");
     lv_obj_set_flex_grow(icon, 2);
     // label
-    lv_obj_t *label = lv_label_create(btn);
+    lv_obj_t *label = lv_label_create(obj);
     lv_label_set_text(label, title);
     lv_obj_set_flex_grow(label, 8);
     // spinbox
-    value_spinbox = lv_spinbox_create(btn);
+    value_spinbox = lv_spinbox_create(obj);
     lv_spinbox_set_range(value_spinbox, min * 10, max * 10);
     lv_spinbox_set_step(value_spinbox, step * 10);
     lv_spinbox_set_digit_format(value_spinbox, 3, 2);
@@ -188,7 +188,7 @@ lv_obj_t *FloatSettingItem::render(lv_obj_t *parent)
     add_style_setting_spinbox_style(value_spinbox);
 
     lv_obj_add_event_cb(
-        btn,
+        obj,
         [](lv_event_t *e) {
             auto item = (FloatSettingItem *)lv_event_get_user_data(e);
             item->setting_item_event_cb(e);
@@ -198,7 +198,7 @@ lv_obj_t *FloatSettingItem::render(lv_obj_t *parent)
         },
         LV_EVENT_KEY, this);
 
-    return btn;
+    return obj;
 }
 
 vector<string> ListSettingItem::get_config_options() const
@@ -244,21 +244,21 @@ void ListSettingItem::setting_item_event_cb(lv_event_t *e)
 
 lv_obj_t *ListSettingItem::render(lv_obj_t *parent)
 {
-    btn = lv_list_add_btn(parent, NULL, NULL);
-    lv_obj_set_user_data(btn, this);
-    lv_obj_set_flex_flow(btn, LV_FLEX_FLOW_ROW);
-    lv_obj_set_height(btn, 60);
-    lv_obj_set_flex_align(btn, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    obj = lv_list_add_btn(parent, NULL, NULL);
+    lv_obj_set_user_data(obj, this);
+    lv_obj_set_flex_flow(obj, LV_FLEX_FLOW_ROW);
+    lv_obj_set_height(obj, 60);
+    lv_obj_set_flex_align(obj, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     // symbol icon
-    lv_obj_t *icon = lv_label_create(btn);
+    lv_obj_t *icon = lv_label_create(obj);
     lv_label_set_text(icon, "");
     lv_obj_set_flex_grow(icon, 2);
     // label
-    lv_obj_t *label = lv_label_create(btn);
+    lv_obj_t *label = lv_label_create(obj);
     lv_label_set_text(label, title);
     lv_obj_set_flex_grow(label, 8);
     // value
-    value_dropdown = lv_roller_create(btn);
+    value_dropdown = lv_roller_create(obj);
     string options_str;
     for (size_t i = 0; i < options.size(); i++) {
         options_str += options[i];
@@ -281,7 +281,7 @@ lv_obj_t *ListSettingItem::render(lv_obj_t *parent)
     }
 
     lv_obj_add_event_cb(
-        btn,
+        obj,
         [](lv_event_t *e) {
             auto item = (ListSettingItem *)lv_event_get_user_data(e);
             item->setting_item_event_cb(e);
@@ -291,5 +291,5 @@ lv_obj_t *ListSettingItem::render(lv_obj_t *parent)
         },
         LV_EVENT_KEY, this);
 
-    return btn;
+    return obj;
 }
