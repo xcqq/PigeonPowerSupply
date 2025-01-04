@@ -1,6 +1,7 @@
 #include "home_page.h"
 #include "settings/root_setting_page.h"
 #include "user_actions.h"
+#include "../../config.h"
 
 const std::string HomePage::PAGE_NAME = "home";
 
@@ -9,6 +10,7 @@ float HomePage::adjust_value(float value, float min, float max) { return clamp(v
 
 void HomePage::update_settings(float set_volt, float set_curr)
 {
+    LOG_DEBUG("Updating power settings - V:%.2f A:%.2f", set_volt, set_curr);
     power_settings.set_volt = set_volt;
     power_settings.set_curr = set_curr;
     io.set_power_module_status(power_settings);
@@ -58,6 +60,7 @@ void HomePage::toggle_output()
     io.set_power_module_status(power_settings);
     io.set_buzzer_beep(BUZZER_TONE_MID, BUZZER_DURATION_MID);
     io.save_config();
+    LOG_INFO("Power output %s", power_settings.enable_flag ? "enabled" : "disabled");
 }
 
 void HomePage::toggle_voltage_current_mode(hmi_module_settings &hmi_settings)
@@ -110,6 +113,7 @@ void HomePage::add_recall_setting(float set_volt, float set_curr)
     recall_setting["set_curr"] = set_curr;
 
     io.save_config();
+    LOG_INFO("Added recall setting: %.2fV %.2fA", set_volt, set_curr);
 }
 
 void HomePage::load_recall_settings_list(lv_obj_t *list)
@@ -140,6 +144,7 @@ void HomePage::load_recall_settings_list(lv_obj_t *list)
 
 void HomePage::onInit()
 {
+    LOG_DEBUG("Initializing home page");
     JsonVariant config_recall = io.get_config_json()["recall_settings"]["recall"];
     if (config_recall.isNull()) {
         recall_settings = io.get_config_json()["recall_settings"].createNestedArray("recall");
@@ -149,6 +154,7 @@ void HomePage::onInit()
 
     recall_group = lv_group_create();
     recall_list = objects.recall_list;
+    LOG_DEBUG("Home page initialization completed");
 }
 
 void HomePage::onEnter()
@@ -198,6 +204,7 @@ void HomePage::handle_short_press(uint8_t keys)
                 JsonObject recall_item = recall_settings[index];
                 float set_volt = recall_item["set_volt"];
                 float set_curr = recall_item["set_curr"];
+                LOG_INFO("Recall setting loaded: %.2fV %.2fA", set_volt, set_curr);
                 update_settings(set_volt, set_curr);
             }
 
@@ -262,27 +269,35 @@ void HomePage::handle_encoder(const hmi_module_status &hmi_status)
     int vc_sel_flag = flow::getGlobalVariable(FLOW_GLOBAL_VARIABLE_VC_SEL_FLAG).getInt();
     float set_curr = power_settings.set_curr;
     float set_volt = power_settings.set_volt;
+    float old_volt = set_volt;
+    float old_curr = set_curr;
 
     if (recall_list_open) {
         if (hmi_status.encoder_inc < 0)
             lv_group_focus_next(recall_group);
         else
             lv_group_focus_prev(recall_group);
+        LOG_DEBUG("Navigating recall list");
     } else {
         if (vc_sel_flag == 0) {
-            float new_curr =
-                adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
-            // Check if new current would exceed power limit
+            float new_curr = adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
             if ((new_curr * set_volt) <= io.get_power_limit()) {
                 set_curr = new_curr;
+            } else {
+                LOG_DEBUG("Current adjustment limited by power limit");
             }
         } else {
-            float new_volt =
-                adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
-            // Check if new voltage would exceed power limit
+            float new_volt = adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
             if ((new_volt * set_curr) <= io.get_power_limit()) {
                 set_volt = new_volt;
+            } else {
+                LOG_DEBUG("Voltage adjustment limited by power limit");
             }
+        }
+        
+        if (old_volt != set_volt || old_curr != set_curr) {
+            LOG_DEBUG("Encoder adjustment - V:%.2f->%.2f A:%.2f->%.2f", 
+                     old_volt, set_volt, old_curr, set_curr);
         }
     }
 

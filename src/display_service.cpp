@@ -57,15 +57,21 @@ static void IRAM_ATTR lv_tick_task(TimerHandle_t xTimer) { lv_tick_inc(portTICK_
 
 void ICACHE_FLASH_ATTR display_service::lv_setup()
 {
+    LOG_DEBUG("Initializing LVGL...");
     lv_init();
 
-    M5.Lcd.begin(); /* TFT init */
+    M5.Lcd.begin();
     M5.Lcd.invertDisplay(1);
-    M5.Lcd.setRotation(ROTATION); /* Landscape orientation */
+    M5.Lcd.setRotation(ROTATION);
+    LOG_DEBUG("LCD initialized with rotation: %d", ROTATION);
+
     lv_color_t *buf2 = (lv_color_t *)malloc(DISP_BUF_SIZE * sizeof(lv_color_t));
+    if (buf2 == NULL) {
+        LOG_ERROR("Failed to allocate display buffer");
+        return;
+    }
     lv_disp_draw_buf_init(&disp_buf, buf1, buf2, DISP_BUF_SIZE);
 
-    /*Initialize the display*/
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     disp_drv.hor_res = LV_HOR_RES_MAX;
@@ -74,28 +80,34 @@ void ICACHE_FLASH_ATTR display_service::lv_setup()
     disp_drv.full_refresh = 0;
     disp_drv.draw_buf = &disp_buf;
     lv_disp_drv_register(&disp_drv);
+    LOG_DEBUG("Display driver initialized: %dx%d", LV_HOR_RES_MAX, LV_VER_RES_MAX);
 
     ui_init();
-
     extern void ui_init_input_groups();
     ui_init_input_groups();
+    LOG_INFO("UI initialization completed");
 }
 
 void ICACHE_FLASH_ATTR display_service::setup()
 {
+    LOG_INFO("Initializing display service...");
     lv_setup();
     TimerHandle_t timer = xTimerCreate("lv_tick_task", pdMS_TO_TICKS(1), pdTRUE, NULL, lv_tick_task);
     if (timer == NULL) {
+        LOG_ERROR("Timer creation failed");
         return;
     }
 
     if (xTimerStart(timer, 0) != pdPASS) {
+        LOG_ERROR("Timer start failed");
         return;
     }
 
 #ifdef KEYPAD
+    LOG_INFO("Initializing keypad...");
     keypad_setup();
 #endif
+    LOG_INFO("Display service initialization completed");
 } // end display service setup
 
 /* =========================end icache functions======================== */

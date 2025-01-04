@@ -1,11 +1,13 @@
 #include "other_setting_page.h"
 #include "./root_setting_page.h"
 #include "user_actions.h"
+#include "../../../config.h"
 
 const std::string OtherSettingPage::PAGE_NAME = "other_setting";
 
 void OtherSettingPage::onInit()
 {
+    LOG_DEBUG("Initializing other setting page");
     lv_obj_t *other_setting_list = objects.other_setting_list;
     JsonVariant config = io.get_config_json();
     if (other_setting_list) {
@@ -16,23 +18,35 @@ void OtherSettingPage::onInit()
 
     beep_setting_item = new BoolSettingItem(
         "Buzzer", config["user_preferences"]["buzzer"], io,
-        [](ConfigSettingItem<bool> *item, io_service &io) { io.set_buzzer(item->getValue()); });
+        [](ConfigSettingItem<bool> *item, io_service &io) { 
+            io.set_buzzer(item->getValue());
+            LOG_INFO("Buzzer %s", item->getValue() ? "enabled" : "disabled");
+        });
     lv_obj_t *btn_beep = beep_setting_item->render(other_setting_list);
     lv_group_add_obj(other_setting_group, btn_beep);
 
     brightness_setting_item = new IntSettingItem(
         "Brightness", config["user_preferences"]["brightness"], io,
-        [](ConfigSettingItem<int> *item, io_service &io) { io.set_brightness(item->getValue()); });
+        [](ConfigSettingItem<int> *item, io_service &io) { 
+            io.set_brightness(item->getValue());
+            LOG_INFO("Brightness set to: %d", item->getValue());
+        });
     lv_obj_t *btn_brightness = brightness_setting_item->render(other_setting_list);
     lv_group_add_obj(other_setting_group, btn_brightness);
 
     refresh_rate_setting_item =
-        new ListSettingItem("Refresh Rate", config["user_preferences"]["refresh_rate"], io, NULL);
+        new ListSettingItem("Refresh Rate", config["user_preferences"]["refresh_rate"], io, 
+            [](ConfigSettingItem<std::string> *item, io_service &io) {
+                LOG_INFO("Refresh rate set to: %s", item->getValue().c_str());
+            });
     lv_obj_t *btn_refresh_rate = refresh_rate_setting_item->render(other_setting_list);
     lv_group_add_obj(other_setting_group, btn_refresh_rate);
 
     language_setting_item =
-        new ListSettingItem("Language", config["user_preferences"]["language"], io, NULL);
+        new ListSettingItem("Language", config["user_preferences"]["language"], io, 
+            [](ConfigSettingItem<std::string> *item, io_service &io) {
+                LOG_INFO("Language set to: %s", item->getValue().c_str());
+            });
     lv_obj_t *btn_language = language_setting_item->render(other_setting_list);
     lv_group_add_obj(other_setting_group, btn_language);
 
@@ -40,6 +54,7 @@ void OtherSettingPage::onInit()
 
     lv_group_focus_obj(btn_beep);
     current_selected_btn = nullptr;
+    LOG_DEBUG("Other setting page initialization completed");
 }
 
 void OtherSettingPage::onEnter()
@@ -58,6 +73,7 @@ void OtherSettingPage::handle_encoder(const hmi_module_status &hmi_status)
             lv_group_focus_next(other_setting_group);
         else
             lv_group_focus_prev(other_setting_group);
+        LOG_DEBUG("Navigating other settings");
     } else {
         if (hmi_status.encoder_inc < 0) {
             key = LV_KEY_UP;
@@ -66,6 +82,7 @@ void OtherSettingPage::handle_encoder(const hmi_module_status &hmi_status)
             key = LV_KEY_DOWN;
             lv_event_send(current_selected_btn, LV_EVENT_KEY, (void *)&key);
         }
+        LOG_DEBUG("Adjusting setting value");
     }
     io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
@@ -106,10 +123,15 @@ void OtherSettingPage::handle_short_press(uint8_t keys)
 
 void OtherSettingPage::update() {}
 
-void OtherSettingPage::onExit() { io.save_config(); }
+void OtherSettingPage::onExit() 
+{ 
+    LOG_DEBUG("Saving other settings");
+    io.save_config(); 
+}
 
 void OtherSettingPage::onDestroy()
 {
+    LOG_DEBUG("Destroying other setting page");
     if (other_setting_list) {
         lv_obj_clean(other_setting_list);
     }

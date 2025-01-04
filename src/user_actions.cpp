@@ -1,4 +1,5 @@
 #include "user_actions.h"
+#include "config.h"
 #include "eez-project/pages/page.h"
 #include "eez-project/pages/home_page.h"
 #include "eez-project/pages/settings/about_page.h"
@@ -8,6 +9,7 @@
 
 void UserActions::switchToPage(const std::string &id)
 {
+    LOG_DEBUG("Switching to page: %s", id.c_str());
     if (current_page) {
         current_page->onExit();
     }
@@ -21,16 +23,21 @@ void UserActions::switchToPage(const std::string &id)
         eez_flow_push_screen(current_page->getScreenId(), LV_SCR_LOAD_ANIM_FADE_IN, 200, 0);
         current_page->onInit();
         current_page->onEnter();
+        LOG_INFO("Page switched to: %s", id.c_str());
+    } else {
+        LOG_ERROR("Page not found: %s", id.c_str());
     }
 }
 
 bool UserActions::goBack()
 {
     if (page_stack.empty()) {
+        LOG_DEBUG("Cannot go back: page stack is empty");
         return false;
     }
 
     if (current_page) {
+        LOG_DEBUG("Exiting current page: %d", current_page->getScreenId());
         current_page->onExit();
         current_page->onDestroy();
     }
@@ -40,6 +47,7 @@ bool UserActions::goBack()
     page_stack.pop();
     
     current_page->onEnter();
+    LOG_INFO("Returned to page: %d", current_page->getScreenId());
     return true;
 }
 
@@ -83,12 +91,17 @@ void UserActions::updatePages() {
 TimerHandle_t UserActions::registerTimer(const char *name, TimerCallbackFunction_t callback,
                                          uint32_t period_ms, bool auto_reload)
 {
+    LOG_DEBUG("Registering timer: %s (period: %dms, auto_reload: %d)", 
+              name, period_ms, auto_reload);
     TimerHandle_t timer = xTimerCreate(name, pdMS_TO_TICKS(period_ms),
                                        auto_reload ? pdTRUE : pdFALSE, nullptr, callback);
 
     if (timer != nullptr) {
         timer_tasks.push_back({timer, callback, name, period_ms, auto_reload});
         xTimerStart(timer, 0);
+        LOG_DEBUG("Timer registered successfully");
+    } else {
+        LOG_ERROR("Failed to create timer: %s", name);
     }
     return timer;
 }
@@ -99,21 +112,27 @@ void UserActions::unregisterTimer(TimerHandle_t timer)
                            [timer](const TimerTask &task) { return task.timer_handle == timer; });
 
     if (it != timer_tasks.end()) {
+        LOG_DEBUG("Unregistering timer: %s", it->name.c_str());
         xTimerDelete(it->timer_handle, 0);
         timer_tasks.erase(it);
+    } else {
+        LOG_ERROR("Timer not found for unregistering");
     }
 }
 
 void UserActions::setup()
 {
+    LOG_INFO("Initializing user actions...");
     registerPage(HomePage::PAGE_NAME, new HomePage(*this, io));
     registerPage(RootSettingPage::PAGE_NAME, new RootSettingPage(*this, io));
     registerPage(OtherSettingPage::PAGE_NAME, new OtherSettingPage(*this, io));
     registerPage(ProtectLimitPage::PAGE_NAME, new ProtectLimitPage(*this, io));
     registerPage(AboutPage::PAGE_NAME, new AboutPage(*this, io));
+    LOG_DEBUG("All pages registered");
 
     // switch to default page
     switchToPage(HomePage::PAGE_NAME);
+    LOG_INFO("User actions initialization completed");
 }
 
 void UserActions::loop() {

@@ -63,11 +63,13 @@ int IRAM_ATTR io_service::read_config_file(void)
 {
     _config_file = _fs.open(CONFIG_FILE_USER, FILE_READ);
     if (!_config_file){
+        LOG_ERROR("Failed to open user config file");
         _config_file.close();
         return -1;
     }
     DeserializationError ret = deserializeJson(_config_json, _config_file);
     if(ret) {
+        LOG_ERROR("Failed to parse user config file");
         _config_file.close();
         return -1;
     }
@@ -80,12 +82,13 @@ int IRAM_ATTR io_service::save_config_file(void)
 {
     _config_file = _fs.open(CONFIG_FILE_USER, FILE_WRITE);
     if (!_config_file){
+        LOG_ERROR("Failed to open user config file for writing");
         _config_file.close();
         return -1;
     }
     serializeJson(_config_json, _config_file);
     _config_file.close();
-
+    LOG_DEBUG("Config file saved successfully");
     return 0;
 }
 
@@ -129,6 +132,9 @@ void IRAM_ATTR io_service::save_config(void)
 {
     _config_update_flag = true;
     if (_config_update_flag){
+        LOG_DEBUG("Updating config - V:%.2f A:%.2f", 
+                  _power_module_settings.set_volt, 
+                  _power_module_settings.set_curr);
         _config_json["power_settings"]["set_voltage"] = _power_module_settings.set_volt;
         _config_json["power_settings"]["set_current"] = _power_module_settings.set_curr;
         save_config_file();
@@ -139,7 +145,9 @@ void IRAM_ATTR io_service::save_config(void)
 void IRAM_ATTR io_service::setup()
 {
     uint32_t uid[3];
+    LOG_INFO("Initializing power module...");
     while (!_pps.begin(&Wire, SDA, SCL, MODULE_POWER_ADDR, I2C_SPEED)) {
+        LOG_ERROR("Failed to connect to power module, retrying...");
         delay(100);
     }
     _pps.begin(&Wire, SDA, SCL, MODULE_POWER_ADDR, I2C_SPEED);
@@ -147,35 +155,47 @@ void IRAM_ATTR io_service::setup()
     _pps.setOutputCurrent(0.0);
     _pps.setPowerEnable(false);
     _pps.getUID(&uid[0], &uid[1], &uid[2]);
+    LOG_DEBUG("Power module UID: 0x%x%x%x", uid[0], uid[1], uid[2]);
 
+    LOG_INFO("Initializing HMI module...");
     while (!_hmi.begin(&Wire, HMI_ADDR, SDA, SCL, I2C_SPEED)) {
+        LOG_ERROR("Failed to connect to HMI module, retrying...");
         delay(100);
     }
     _hmi.begin(&Wire, HMI_ADDR, SDA, SCL, I2C_SPEED);
     _hmi.resetCounter();
 
+    LOG_INFO("Initializing file system...");
     if (!_fs.begin(true)) {
+        LOG_ERROR("SPIFFS failed to init, formatting...");
         if (!_fs.format()) {
+            LOG_ERROR("SPIFFS format failed");
             while (1) {
                 delay(1000);
             }
         }
     }
+    LOG_DEBUG("File system total size: %x, used size: %x", _fs.totalBytes(), _fs.usedBytes());
     
     bool need_init = false;
     if (read_config_file()) {
+        LOG_ERROR("User config file read failed");
         need_init = true;
     } else if (strcmp(VERSION, _config_json["version"])) {
+        LOG_INFO("Config version mismatch, reinitializing");
         need_init = true;
     }
 
     if (need_init) {
+        LOG_INFO("Creating user config from default config");
         if (init_config_file()) {
+            LOG_ERROR("Initialize config file failed");
             while (1) {
                 delay(1000);
             }
         }
         if (read_config_file()) {
+            LOG_ERROR("Read new config file failed");
             while (1) {
                 delay(1000);
             }
@@ -196,6 +216,7 @@ void IRAM_ATTR io_service::setup()
 
     M5.Speaker.begin();
     M5.Speaker.mute();
+    LOG_INFO("IO service initialization completed");
 }
 
 void IRAM_ATTR io_service::loop()
