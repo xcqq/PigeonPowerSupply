@@ -17,11 +17,7 @@ void UserActions::switchToPage(const std::string &id)
         if (current_page) {
             page_stack.push(current_page);
         }
-        Serial.println("push screen to ");
-        Serial.println(id.c_str());
         current_page = it->second.get();
-        Serial.println("push screen to ");
-        Serial.println(current_page->getScreenId());
         eez_flow_push_screen(current_page->getScreenId(), LV_SCR_LOAD_ANIM_FADE_IN, 200, 0);
         current_page->onInit();
         current_page->onEnter();
@@ -43,8 +39,6 @@ bool UserActions::goBack()
     current_page = page_stack.top();
     page_stack.pop();
     
-    Serial.println("pop screen to ");
-    Serial.println(current_page->getScreenId());
     current_page->onEnter();
     return true;
 }

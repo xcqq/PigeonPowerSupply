@@ -60,11 +60,9 @@ void ProtectLimitPage::handle_encoder(const hmi_module_status &hmi_status)
             lv_group_focus_prev(protect_limit_group);
     } else {
         if (hmi_status.encoder_inc < 0) {
-            Serial.println("Encoder up");
             key = LV_KEY_UP;
             lv_event_send(current_selected_btn, LV_EVENT_KEY, (void *)&key);
         } else {
-            Serial.println("Encoder down");
             key = LV_KEY_DOWN;
             lv_event_send(current_selected_btn, LV_EVENT_KEY, (void *)&key);
         }
@@ -75,8 +73,6 @@ void ProtectLimitPage::handle_encoder(const hmi_module_status &hmi_status)
 
 void ProtectLimitPage::handle_short_press(uint8_t keys)
 {
-    Serial.print(F("[INFO] Protect limit page key pressed: "));
-    Serial.println(keys);
     lv_obj_t *focused_obj = nullptr;
 
     switch (keys) {

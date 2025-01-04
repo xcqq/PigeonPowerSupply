@@ -110,12 +110,6 @@ void HomePage::add_recall_setting(float set_volt, float set_curr)
     recall_setting["set_curr"] = set_curr;
 
     io.save_config();
-
-    Serial.println(F("[INFO] Added new recall setting:"));
-    Serial.print(F("  Voltage: "));
-    Serial.print(set_volt);
-    Serial.print(F("V, Current: "));
-    Serial.println(set_curr);
 }
 
 void HomePage::load_recall_settings_list(lv_obj_t *list)
@@ -153,18 +147,6 @@ void HomePage::onInit()
         recall_settings = config_recall;
     }
 
-    Serial.println(F("[INFO] Recall settings:"));
-    if (recall_settings.isNull()) {
-        Serial.println(F("  No recall settings found"));
-    } else {
-        for (JsonVariant recall_setting : recall_settings) {
-            Serial.print(F("  Voltage: "));
-            Serial.print(recall_setting["set_volt"].as<float>());
-            Serial.print(F("V, Current: "));
-            Serial.print(recall_setting["set_curr"].as<float>());
-            Serial.println(F("A"));
-        }
-    }
     recall_group = lv_group_create();
     recall_list = objects.recall_list;
 }
@@ -253,10 +235,6 @@ void HomePage::handle_short_press(uint8_t keys)
             if (index < recall_settings.size()) {
                 recall_settings.remove(index);
                 io.save_config();
-
-                Serial.print(F("[INFO] Deleted recall setting at index: "));
-                Serial.println(index);
-
                 load_recall_settings_list(recall_list);
             }
         } else {
@@ -268,9 +246,6 @@ void HomePage::handle_short_press(uint8_t keys)
         if (recall_list_open) {
             recall_settings.clear();
             io.save_config();
-
-            Serial.println(F("[INFO] Cleared all recall settings"));
-
             load_recall_settings_list(recall_list);
         } else {
             user_actions.switchToPage(RootSettingPage::PAGE_NAME);

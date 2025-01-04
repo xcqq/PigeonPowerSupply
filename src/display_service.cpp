@@ -86,18 +86,13 @@ void ICACHE_FLASH_ATTR display_service::setup()
     lv_setup();
     TimerHandle_t timer = xTimerCreate("lv_tick_task", pdMS_TO_TICKS(1), pdTRUE, NULL, lv_tick_task);
     if (timer == NULL) {
-        Serial.println("Timer creation failed!");
         return;
     }
 
     if (xTimerStart(timer, 0) != pdPASS) {
-        Serial.println("Timer start failed!");
         return;
     }
 
-#ifdef _DEBUG_
-    Serial.print(F("[INFO] Display GUI setup finished! \n"));
-#endif
 #ifdef KEYPAD
     keypad_setup();
 #endif

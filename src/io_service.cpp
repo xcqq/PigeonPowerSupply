@@ -22,17 +22,6 @@ void IRAM_ATTR io_service::power_module_sync(void) {
         _pps.setPowerEnable(_power_module_settings.enable_flag);
         _power_set_flag = false;
     }
-#ifdef _DEBUG_
-    Serial.printf("Power module sync:\n");
-    Serial.printf("set volt:%.3f\n", _power_module_status.set_volt);
-    Serial.printf("set curr:%.3f\n", _power_module_status.set_curr);
-    Serial.printf("out volt:%.3f\n", _power_module_status.out_volt);
-    Serial.printf("out curr:%.3f\n", _power_module_status.out_curr);
-    Serial.printf("cc/cv flag:%d\n", _power_module_status.cc_cv_flag);
-    Serial.printf("enable flag:%d\n", _power_module_status.enable_flag);
-    Serial.printf("temperature:%f\n", _power_module_status.temperature);
-    Serial.printf("in volt:%f\n", _power_module_status.in_volt);
-#endif
 }
 
 void IRAM_ATTR io_service::hmi_module_sync(void) {
@@ -46,12 +35,6 @@ void IRAM_ATTR io_service::hmi_module_sync(void) {
         _hmi.setLEDStatus(1, _hmi_module_settings.led_2);
         _hmi_set_flag = false;
     }
-#ifdef _DEBUG_
-    Serial.printf("Power module sync:\n");
-    Serial.printf("btn1:%d btn2:%d btns:%d\n", _hmi_module_status.button_1,
-                  _hmi_module_status.button_2, _hmi_module_status.button_s);
-    Serial.printf("encoder inc:%d\n", _hmi_module_status.encoder_inc_raw);
-#endif
 }
 
 struct hmi_module_status IRAM_ATTR io_service::get_hmi_module_status(void) {
@@ -155,12 +138,8 @@ void IRAM_ATTR io_service::save_config(void)
 
 void IRAM_ATTR io_service::setup()
 {
-    Serial.begin(115200);
-
-    Serial.printf("==========Init power module==========\n");
     uint32_t uid[3];
     while (!_pps.begin(&Wire, SDA, SCL, MODULE_POWER_ADDR, I2C_SPEED)) {
-        Serial.println("module pps connect error");
         delay(100);
     }
     _pps.begin(&Wire, SDA, SCL, MODULE_POWER_ADDR, I2C_SPEED);
@@ -168,50 +147,36 @@ void IRAM_ATTR io_service::setup()
     _pps.setOutputCurrent(0.0);
     _pps.setPowerEnable(false);
     _pps.getUID(&uid[0], &uid[1], &uid[2]);
-    Serial.printf("Power module UID:0x%x%x%x\n", uid[0],uid[1],uid[2]);
-    Serial.printf("====================\n");
 
-    Serial.printf("==========Init hmi module==========\n");
     while (!_hmi.begin(&Wire, HMI_ADDR, SDA, SCL, I2C_SPEED)) {
-        Serial.println("module hmi connect error");
         delay(100);
     }
     _hmi.begin(&Wire, HMI_ADDR, SDA, SCL, I2C_SPEED);
     _hmi.resetCounter();
-    Serial.printf("====================\n");
 
-    Serial.printf("==========Init SPIFFS==========\n");
     if (!_fs.begin(true)) {
-        Serial.println("SPIFFS failed to init. Formatting......");
         if (!_fs.format()) {
             while (1) {
-                Serial.println("SPIFFS format failed");
                 delay(1000);
             }
         }
     }
-    Serial.printf("Total size:%x Used size:%x\n", _fs.totalBytes(), _fs.usedBytes());
     
     bool need_init = false;
     if (read_config_file()) {
-        Serial.println(F("User config file read failed"));
         need_init = true;
     } else if (strcmp(VERSION, _config_json["version"])) {
-        Serial.println("Config version mismatched");
         need_init = true;
     }
 
     if (need_init) {
-        Serial.println("Creating user config from default config");
         if (init_config_file()) {
             while (1) {
-                Serial.println(F("Initialize config file failed"));
                 delay(1000);
             }
         }
         if (read_config_file()) {
             while (1) {
-                Serial.println(F("Read new config file failed"));
                 delay(1000);
             }
         }
@@ -228,8 +193,6 @@ void IRAM_ATTR io_service::setup()
     _power_module_settings.temperature_limit = _config_json["protection_limits"]["temperature_limit"]["value"].as<int>();
     set_brightness(_power_module_settings.brightness);
     set_power_module_status(_power_module_settings);
-
-    Serial.printf("====================\n");
 
     M5.Speaker.begin();
     M5.Speaker.mute();
@@ -315,7 +278,6 @@ JsonDocument& io_service::get_config_json(void) {
 }
 
 void IRAM_ATTR io_service::set_brightness(int brightness) {
-    Serial.printf("set brightness:%d\n", brightness);
     M5.Lcd.setBrightness((uint8_t)(brightness * 255 / 10));
 }
 

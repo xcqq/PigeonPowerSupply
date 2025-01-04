@@ -4,10 +4,8 @@
 void BoolSettingItem::setting_item_event_cb(lv_event_t *e)
 {
     bool current_value = getValue();
-    Serial.println("Current value: " + String(current_value));
     current_value = !current_value;
     setValue(current_value);
-    Serial.println("New value: " + String(current_value));
     if (current_value) {
         lv_obj_add_state(btn_switch, LV_STATE_CHECKED);
     } else {
@@ -57,7 +55,6 @@ lv_obj_t *BoolSettingItem::render(lv_obj_t *parent)
 void IntSettingItem::setting_item_event_cb(lv_event_t *e)
 {
     if (e == nullptr) {
-        Serial.println("Event is null");
         return;
     }
     lv_event_code_t code = lv_event_get_code(e);
@@ -218,13 +215,11 @@ void ListSettingItem::setValue(const string &value) const { json_config["value"]
 void ListSettingItem::setting_item_event_cb(lv_event_t *e)
 {
     if (e == nullptr) {
-        Serial.println("Event is null");
         return;
     }
     lv_event_code_t code = lv_event_get_code(e);
     if (code == LV_EVENT_KEY) {
         lv_key_t key = lv_event_get_key(e);
-        Serial.println("Key: " + String(key));
         switch (key) {
         case LV_KEY_UP:
             if (lv_roller_get_selected(value_dropdown) < options.size() - 1) {

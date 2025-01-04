@@ -25,8 +25,6 @@ void RootSettingPage::onInit()
         [](lv_event_t *e) {
             auto page = (RootSettingPage *)lv_event_get_user_data(e);
             lv_event_code_t code = lv_event_get_code(e);
-            Serial.print(F("[INFO] About page event code: "));
-            Serial.println(code);
             if (code == LV_EVENT_KEY) {
                 page->user_actions.switchToPage(AboutPage::PAGE_NAME);
             }
@@ -38,8 +36,6 @@ void RootSettingPage::onInit()
         [](lv_event_t *e) {
             auto page = (RootSettingPage *)lv_event_get_user_data(e);
             lv_event_code_t code = lv_event_get_code(e);
-            Serial.print(F("[INFO] Other setting page event code: "));
-            Serial.println(code);
             if (code == LV_EVENT_KEY) {
                 page->user_actions.switchToPage(OtherSettingPage::PAGE_NAME);
             }
@@ -51,8 +47,6 @@ void RootSettingPage::onInit()
         [](lv_event_t *e) {
             auto page = (RootSettingPage *)lv_event_get_user_data(e);
             lv_event_code_t code = lv_event_get_code(e);
-            Serial.print(F("[INFO] Protect limit page event code: "));
-            Serial.println(code);
             if (code == LV_EVENT_KEY) {
                 page->user_actions.switchToPage(ProtectLimitPage::PAGE_NAME);
             }
@@ -80,17 +74,12 @@ void RootSettingPage::handle_encoder(const hmi_module_status &hmi_status)
 
 void RootSettingPage::handle_short_press(uint8_t keys)
 {
-    Serial.print(F("[INFO] Setting page key pressed: "));
-    Serial.println(keys);
     lv_obj_t *focused_obj = nullptr;
 
     switch (keys) {
     case KEY_HMI_S:
-        Serial.print(F("[DEBUG] Setting page S key pressed, focused obj: "));
         focused_obj = lv_group_get_focused(setting_group);
-        Serial.println(focused_obj ? "exists" : "null");
         if (focused_obj) {
-            Serial.println(F("[DEBUG] Sending ENTER key to focused object"));
             lv_group_send_data(setting_group, LV_KEY_ENTER);
         }
         break;
