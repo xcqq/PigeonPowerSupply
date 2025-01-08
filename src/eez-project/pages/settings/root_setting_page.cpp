@@ -97,9 +97,14 @@ void RootSettingPage::update() {}
 
 void RootSettingPage::onDestroy()
 {
+    /* temporary remove the code since it will case crash, 
+       could be cause by reentrancy problem
+    */
+   /*
     if (setting_list) {
         lv_obj_clean(setting_list);
     }
+    */
     if (setting_group) {
         lv_group_remove_all_objs(setting_group);
         lv_group_del(setting_group);

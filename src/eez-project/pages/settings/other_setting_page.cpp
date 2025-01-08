@@ -141,9 +141,14 @@ void OtherSettingPage::onExit()
 void OtherSettingPage::onDestroy()
 {
     LOG_DEBUG("Destroying other setting page");
+    /* temporary remove the code since it will case crash, 
+       could be cause by reentrancy problem
+    */
+   /*
     if (other_setting_list) {
         lv_obj_clean(other_setting_list);
     }
+    */
     if (other_setting_group) {
         lv_group_remove_all_objs(other_setting_group);
         lv_group_del(other_setting_group);

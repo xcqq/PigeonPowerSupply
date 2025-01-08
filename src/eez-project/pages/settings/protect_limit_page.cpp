@@ -133,9 +133,14 @@ void ProtectLimitPage::onExit()
 void ProtectLimitPage::onDestroy()
 {
     LOG_DEBUG("Destroying protect limit page");
+    /* temporary remove the code since it will case crash, 
+       could be cause by reentrancy problem
+    */
+    /*
     if (protect_limit_list) {
         lv_obj_clean(protect_limit_list);
     }
+    */
     if (protect_limit_group) {
         lv_group_remove_all_objs(protect_limit_group);
         lv_group_del(protect_limit_group);
