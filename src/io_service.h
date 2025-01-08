@@ -151,5 +151,6 @@ public : io_service();
   float get_max_voltage(void);
   int get_power_limit(void);
   int get_temperature_limit(void);
+  int get_refresh_rate(void);
 };
 #endif

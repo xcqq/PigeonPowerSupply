@@ -10,6 +10,7 @@ private:
     bool recall_list_open = false;
     lv_group_t* recall_group;
     lv_obj_t* recall_list;
+    TimerHandle_t status_update_timer;
 
     void update_settings(float set_volt, float set_curr);
     void toggle_output();
@@ -22,6 +23,7 @@ private:
     float adjust_value(float value, float min, float max);
     void add_recall_setting(float set_volt, float set_curr);
     void load_recall_settings_list(lv_obj_t* list);
+    static void timer_callback(TimerHandle_t timer);
 
 public:
     static const std::string PAGE_NAME;
@@ -32,6 +34,7 @@ public:
         
     void onInit() override;
     void onEnter() override;
+    void onExit() override;
     void update() override;
     void handle_short_press(uint8_t keys) override;
     void handle_long_press(uint8_t keys) override;

@@ -89,8 +89,8 @@ void HomePage::update_status_variables()
                             IntegerValue(float_to_int_rounded(power_status.out_volt, 1000)));
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_OUT_CURR,
                             IntegerValue(float_to_int_rounded(power_status.out_curr, 1000)));
-    
-        flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_POWER_TEMP,
+
+    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_POWER_TEMP,
                             IntegerValue(float_to_int_rounded(power_status.temperature, 1)));
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_INPUT_VOLT,
                             IntegerValue(float_to_int_rounded(power_status.in_volt, 100)));
@@ -151,11 +151,30 @@ void HomePage::onInit()
     LOG_DEBUG("Home page initialization completed");
 }
 
+static HomePage *timer_instance = nullptr;
+
+void HomePage::timer_callback(TimerHandle_t timer)
+{
+    if (timer_instance) {
+        timer_instance->update_status_variables();
+    }
+}
+
 void HomePage::onEnter()
 {
     recall_list_open = false;
     lv_obj_add_flag(recall_list, LV_OBJ_FLAG_HIDDEN);
     power_settings = io.get_power_module_settings();
+    timer_instance = this;
+    int refresh_rate = io.get_refresh_rate();
+    status_update_timer =
+        user_actions.registerTimer("status_update", HomePage::timer_callback, refresh_rate, true);
+}
+
+void HomePage::onExit()
+{
+    timer_instance = nullptr;
+    user_actions.unregisterTimer(status_update_timer);
 }
 
 void HomePage::update() {
@@ -282,24 +301,26 @@ void HomePage::handle_encoder(const hmi_module_status &hmi_status)
         LOG_DEBUG("Navigating recall list");
     } else {
         if (vc_sel_flag == 0) {
-            float new_curr = adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
+            float new_curr =
+                adjust_value(set_curr + set_step * hmi_status.encoder_inc, 0, io.get_max_current());
             if ((new_curr * set_volt) <= io.get_power_limit()) {
                 set_curr = new_curr;
             } else {
                 LOG_DEBUG("Current adjustment limited by power limit");
             }
         } else {
-            float new_volt = adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
+            float new_volt =
+                adjust_value(set_volt + set_step * hmi_status.encoder_inc, 0, io.get_max_voltage());
             if ((new_volt * set_curr) <= io.get_power_limit()) {
                 set_volt = new_volt;
             } else {
                 LOG_DEBUG("Voltage adjustment limited by power limit");
             }
         }
-        
+
         if (old_volt != set_volt || old_curr != set_curr) {
-            LOG_DEBUG("Encoder adjustment - V:%.2f->%.2f A:%.2f->%.2f", 
-                     old_volt, set_volt, old_curr, set_curr);
+            LOG_DEBUG("Encoder adjustment - V:%.2f->%.2f A:%.2f->%.2f", old_volt, set_volt,
+                      old_curr, set_curr);
         }
     }
 

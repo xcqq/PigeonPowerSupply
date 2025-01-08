@@ -46,7 +46,7 @@
         },
         "refresh_rate": {
             "value": "high",
-            "options": ["high", "low"]
+            "options": ["high", "mid", "low"]
         }
     },
     "recall_settings": {

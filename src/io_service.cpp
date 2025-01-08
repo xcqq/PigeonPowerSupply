@@ -321,3 +321,13 @@ void IRAM_ATTR io_service::set_power_limit(int power_limit) {
 void IRAM_ATTR io_service::set_temperature_limit(int temperature_limit) {
     _power_module_settings.temperature_limit = temperature_limit;
 }
+
+int IRAM_ATTR io_service::get_refresh_rate(void) {
+    if (_config_json["user_preferences"]["refresh_rate"]["value"] == "high") {
+        return 50;
+    } else if (_config_json["user_preferences"]["refresh_rate"]["value"] == "medium") {
+        return 200;
+    } else {
+        return 500;
+    }
+}
