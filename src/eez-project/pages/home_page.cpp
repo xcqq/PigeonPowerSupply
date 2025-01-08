@@ -89,14 +89,8 @@ void HomePage::update_status_variables()
                             IntegerValue(float_to_int_rounded(power_status.out_volt, 1000)));
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_OUT_CURR,
                             IntegerValue(float_to_int_rounded(power_status.out_curr, 1000)));
-    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_VOLT,
-                            IntegerValue(float_to_int_rounded(power_status.set_volt, 1000)));
-    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_CURR,
-                            IntegerValue(float_to_int_rounded(power_status.set_curr, 1000)));
-
-    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_CC_CV_FLAG, power_status.cc_cv_flag);
-    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_OUT_ENABLE, power_status.enable_flag);
-    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_POWER_TEMP,
+    
+        flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_POWER_TEMP,
                             IntegerValue(float_to_int_rounded(power_status.temperature, 1)));
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_INPUT_VOLT,
                             IntegerValue(float_to_int_rounded(power_status.in_volt, 100)));
@@ -164,7 +158,15 @@ void HomePage::onEnter()
     power_settings = io.get_power_module_settings();
 }
 
-void HomePage::update() { update_status_variables(); }
+void HomePage::update() {
+    power_module_status power_status = io.get_power_module_status();
+    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_CC_CV_FLAG, power_status.cc_cv_flag);
+    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_OUT_ENABLE, power_status.enable_flag);
+    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_VOLT,
+                            IntegerValue(float_to_int_rounded(power_status.set_volt, 1000)));
+    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_CURR,
+                            IntegerValue(float_to_int_rounded(power_status.set_curr, 1000)));
+}
 
 void HomePage::handle_long_press(uint8_t keys)
 {
