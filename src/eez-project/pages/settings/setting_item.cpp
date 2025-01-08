@@ -1,5 +1,6 @@
 #include "setting_item.h"
 #include "../../styles.h"
+#include "eez-project/images.h"
 
 void BoolSettingItem::setting_item_event_cb(lv_event_t *e)
 {
@@ -31,7 +32,15 @@ lv_obj_t *BoolSettingItem::render(lv_obj_t *parent)
     // switch
     btn_switch = lv_switch_create(obj);
     lv_obj_set_flex_grow(btn_switch, 3);
-    lv_obj_set_height(btn_switch, 26);
+    lv_obj_set_height(btn_switch, 32);
+    lv_obj_set_width(btn_switch, 40);
+    add_style_setting_list_switch_style(btn_switch);
+    // place holder
+    lv_obj_t *place_holder = lv_label_create(obj);
+    lv_label_set_text(place_holder, "");
+    lv_obj_set_height(place_holder, 16);
+    lv_obj_set_width(place_holder, 16);
+
 
     lv_obj_add_event_cb(
         obj,
@@ -118,8 +127,14 @@ lv_obj_t *IntSettingItem::render(lv_obj_t *parent)
     }
     lv_spinbox_set_digit_format(value_spinbox, digit_count, 0);
     lv_spinbox_set_value(value_spinbox, getValue());
-    lv_obj_set_flex_grow(value_spinbox, 3);
+    lv_obj_set_height(value_spinbox, 32);
+    lv_obj_set_width(value_spinbox, 60);
     add_style_setting_spinbox_style(value_spinbox);
+    // up down icon
+    lv_obj_t *up_down_icon = lv_img_create(obj);
+    lv_img_set_src(up_down_icon, &img_pic_up_down_light);
+    lv_obj_set_height(up_down_icon,16);
+    lv_obj_set_width(up_down_icon, 16);
 
     lv_obj_add_event_cb(
         obj,
@@ -181,8 +196,13 @@ lv_obj_t *FloatSettingItem::render(lv_obj_t *parent)
     lv_spinbox_set_digit_format(value_spinbox, 3, 2);
     lv_spinbox_set_value(value_spinbox, getValue() * 10);
     lv_obj_set_height(value_spinbox, 32);
-    lv_obj_set_flex_grow(value_spinbox, 4);
+    lv_obj_set_width(value_spinbox, 60);
     add_style_setting_spinbox_style(value_spinbox);
+    // up down icon
+    lv_obj_t *up_down_icon = lv_img_create(obj);
+    lv_img_set_src(up_down_icon, &img_pic_up_down_light);
+    lv_obj_set_height(up_down_icon,16);
+    lv_obj_set_width(up_down_icon, 16);
 
     lv_obj_add_event_cb(
         obj,
@@ -221,16 +241,18 @@ void ListSettingItem::setting_item_event_cb(lv_event_t *e)
     if (code == LV_EVENT_KEY) {
         lv_key_t key = lv_event_get_key(e);
         switch (key) {
-        case LV_KEY_UP:
+        case LV_KEY_DOWN:
             if (lv_roller_get_selected(value_dropdown) < options.size() - 1) {
                 lv_roller_set_selected(value_dropdown, lv_roller_get_selected(value_dropdown) + 1,
                                        LV_ANIM_ON);
+                setValue(options[lv_roller_get_selected(value_dropdown)]);
             }
             break;
-        case LV_KEY_DOWN:
+        case LV_KEY_UP:
             if (lv_roller_get_selected(value_dropdown) > 0) {
                 lv_roller_set_selected(value_dropdown, lv_roller_get_selected(value_dropdown) - 1,
                                        LV_ANIM_ON);
+                setValue(options[lv_roller_get_selected(value_dropdown)]);
             }
             break;
         }
@@ -254,6 +276,12 @@ lv_obj_t *ListSettingItem::render(lv_obj_t *parent)
     lv_obj_set_flex_grow(label, 8);
     // value
     value_dropdown = lv_roller_create(obj);
+    add_style_setting_list_roller_style(value_dropdown);
+    // up down icon
+    lv_obj_t *up_down_icon = lv_img_create(obj);
+    lv_img_set_src(up_down_icon, &img_pic_up_down_light);
+    lv_obj_set_height(up_down_icon,16);
+    lv_obj_set_width(up_down_icon, 16);
     string options_str;
     for (size_t i = 0; i < options.size(); i++) {
         options_str += options[i];
@@ -266,7 +294,7 @@ lv_obj_t *ListSettingItem::render(lv_obj_t *parent)
     }
     lv_roller_set_options(value_dropdown, options_str.c_str(), LV_ROLLER_MODE_NORMAL);
     lv_obj_set_height(value_dropdown, 32);
-    lv_obj_set_flex_grow(value_dropdown, 3);
+    lv_obj_set_width(value_dropdown, 60);
     string current_value = getValue();
     for (size_t i = 0; i < options.size(); i++) {
         if (options[i] == current_value) {

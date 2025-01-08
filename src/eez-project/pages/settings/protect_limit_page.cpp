@@ -1,6 +1,7 @@
 #include "protect_limit_page.h"
 #include "user_actions.h"
 #include "../../../config.h"
+#include "eez-project/styles.h"
 
 const std::string ProtectLimitPage::PAGE_NAME = "protect_limit";
 
@@ -50,6 +51,11 @@ void ProtectLimitPage::onInit()
     lv_obj_t *temperature_limit_item_obj = temperature_limit_item->render(protect_limit_list);
     lv_group_add_obj(protect_limit_group, temperature_limit_item_obj);
 
+    add_style_setting_list_button_style(current_limit_item_obj);
+    add_style_setting_list_button_style(voltage_limit_item_obj);
+    add_style_setting_list_button_style(power_limit_item_obj);
+    add_style_setting_list_button_style(temperature_limit_item_obj);
+
     lv_group_focus_obj(current_limit_item_obj);
     current_selected_btn = nullptr;
     LOG_DEBUG("Protect limit page initialization completed");
@@ -69,7 +75,7 @@ void ProtectLimitPage::handle_encoder(const hmi_module_status &hmi_status)
             lv_group_focus_prev(protect_limit_group);
         LOG_DEBUG("Navigating protection settings");
     } else {
-        if (hmi_status.encoder_inc < 0) {
+        if (hmi_status.encoder_inc > 0) {
             key = LV_KEY_UP;
             lv_event_send(current_selected_btn, LV_EVENT_KEY, (void *)&key);
         } else {
@@ -89,6 +95,7 @@ void ProtectLimitPage::handle_short_press(uint8_t keys)
     switch (keys) {
     case KEY_HMI_S:
         if (current_selected_btn) {
+            lv_obj_clear_state(current_selected_btn, LV_STATE_PRESSED | LV_STATE_CHECKED);
             current_selected_btn = nullptr;
         } else {
             focused_obj = lv_group_get_focused(protect_limit_group);
@@ -96,6 +103,7 @@ void ProtectLimitPage::handle_short_press(uint8_t keys)
                 if (auto item = (ConfigSettingItem<int> *)lv_obj_get_user_data(focused_obj)) {
                     if (item->can_select()) {
                         current_selected_btn = focused_obj;
+                        lv_obj_add_state(current_selected_btn, LV_STATE_PRESSED | LV_STATE_CHECKED);
                     } else {
                         lv_group_send_data(protect_limit_group, LV_KEY_ENTER);
                     }
@@ -105,6 +113,7 @@ void ProtectLimitPage::handle_short_press(uint8_t keys)
         break;
     case KEY_M5_A:
         if (current_selected_btn) {
+            lv_obj_clear_state(current_selected_btn, LV_STATE_PRESSED | LV_STATE_CHECKED);
             current_selected_btn = nullptr;
         } else {
             user_actions.goBack();

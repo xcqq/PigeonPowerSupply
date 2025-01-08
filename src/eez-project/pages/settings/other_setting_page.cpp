@@ -2,6 +2,7 @@
 #include "./root_setting_page.h"
 #include "user_actions.h"
 #include "../../../config.h"
+#include "eez-project/styles.h"
 
 const std::string OtherSettingPage::PAGE_NAME = "other_setting";
 
@@ -50,6 +51,11 @@ void OtherSettingPage::onInit()
     lv_obj_t *btn_language = language_setting_item->render(other_setting_list);
     lv_group_add_obj(other_setting_group, btn_language);
 
+    add_style_setting_list_button_style(btn_language);
+    add_style_setting_list_button_style(btn_refresh_rate);
+    add_style_setting_list_button_style(btn_beep);
+    add_style_setting_list_button_style(btn_brightness);
+
     lv_group_set_wrap(other_setting_group, false);
 
     lv_group_focus_obj(btn_beep);
@@ -75,7 +81,7 @@ void OtherSettingPage::handle_encoder(const hmi_module_status &hmi_status)
             lv_group_focus_prev(other_setting_group);
         LOG_DEBUG("Navigating other settings");
     } else {
-        if (hmi_status.encoder_inc < 0) {
+        if (hmi_status.encoder_inc > 0) {
             key = LV_KEY_UP;
             lv_event_send(current_selected_btn, LV_EVENT_KEY, (void *)&key);
         } else {
@@ -94,6 +100,7 @@ void OtherSettingPage::handle_short_press(uint8_t keys)
     switch (keys) {
     case KEY_HMI_S:
         if (current_selected_btn) {
+            lv_obj_clear_state(current_selected_btn, LV_STATE_CHECKED | LV_STATE_PRESSED);
             current_selected_btn = nullptr;
         } else {
             focused_obj = lv_group_get_focused(other_setting_group);
@@ -101,6 +108,7 @@ void OtherSettingPage::handle_short_press(uint8_t keys)
                 if (auto item = (ConfigSettingItem<int> *)lv_obj_get_user_data(focused_obj)) {
                     if (item->can_select()) {
                         current_selected_btn = focused_obj;
+                        lv_obj_add_state(current_selected_btn, LV_STATE_PRESSED | LV_STATE_CHECKED);
                     } else {
                         lv_group_send_data(other_setting_group, LV_KEY_ENTER);
                     }
@@ -110,6 +118,7 @@ void OtherSettingPage::handle_short_press(uint8_t keys)
         break;
     case KEY_M5_A:
         if (current_selected_btn) {
+            lv_obj_clear_state(current_selected_btn, LV_STATE_PRESSED | LV_STATE_CHECKED);
             current_selected_btn = nullptr;
         } else {
             user_actions.goBack();
