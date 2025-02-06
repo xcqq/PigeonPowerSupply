@@ -2,7 +2,6 @@
 #define DISPLAY_SERVICE_H
 
 #include "lvgl.h"
-#include "M5Stack.h"
 
 class display_service
 {
@@ -10,9 +9,9 @@ private:
     lv_indev_drv_t _inter_key_indev_drv;
     lv_indev_drv_t _hmi_key_indev_drv;
     lv_indev_drv_t _hmi_encoder_indev_drv;
-  void ICACHE_FLASH_ATTR lv_setup();
+  void lv_setup();
 #ifdef KEYPAD
-  void ICACHE_FLASH_ATTR keypad_setup();
+  void keypad_setup();
 #endif
 
   static void IRAM_ATTR update_global_vars(void);

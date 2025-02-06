@@ -9,12 +9,13 @@
 #include "eez-project/vars.h"
 #include "eez-project/structs.h"
 #include "io_service.h"
-#include "M5Stack.h"
+#include <TFT_eSPI.h>
 
 #ifdef KEYPAD
 #include "keypad.h"
 #endif
 
+extern TFT_eSPI tft = TFT_eSPI(); //load tft service
 
 display_service::display_service() {}
 display_service::~display_service() {}
@@ -60,9 +61,11 @@ void ICACHE_FLASH_ATTR display_service::lv_setup()
     LOG_DEBUG("Initializing LVGL...");
     lv_init();
 
-    M5.Lcd.begin();
-    M5.Lcd.invertDisplay(1);
-    M5.Lcd.setRotation(ROTATION);
+    tft.begin();               /* TFT init */
+    tft.invertDisplay(1);
+    tft.setRotation(ROTATION); /* Landscape orientation */
+    tft.initDMA();
+
     LOG_DEBUG("LCD initialized with rotation: %d", ROTATION);
 
     lv_color_t *buf2 = (lv_color_t *)malloc(DISP_BUF_SIZE * sizeof(lv_color_t));
@@ -192,11 +195,11 @@ void IRAM_ATTR display_service::my_disp_flush(lv_disp_drv_t *disp, const lv_area
     uint32_t w = (area->x2 - area->x1 + 1);
     uint32_t h = (area->y2 - area->y1 + 1);
 
-    M5.Lcd.setAddrWindow(area->x1, area->y1, w, h);
-    M5.Lcd.startWrite();
-    M5.Lcd.setSwapBytes(true);
-    M5.Lcd.pushColors(&color_p->full, w * h); // Push line to screen
-    M5.Lcd.endWrite();
+    tft.setAddrWindow(area->x1, area->y1, w, h);
+    tft.startWrite();
+    tft.setSwapBytes(true);
+    tft.pushPixelsDMA(&color_p->full, w * h); // Push line to screen
+    tft.endWrite();
 
     lv_disp_flush_ready(disp);
 }

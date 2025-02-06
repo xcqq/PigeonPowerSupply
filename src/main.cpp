@@ -40,7 +40,7 @@ static void vTaskDisplay(void *params)
 
 void setup(void)
 {
-    M5.begin();
+    M5.begin(false, false, true, true);
 
     xTaskCreatePinnedToCore(vTaskDisplay,  /* Task function */
                             "display",     /* Task name */
