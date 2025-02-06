@@ -9,29 +9,12 @@
 
 static TaskHandle_t task_display;
 static TaskHandle_t task_io;
-static TaskHandle_t task_action;
 io_service io;           /* IO control service */
 display_service display; /* display service */
 UserActions user_actions(io);
 
-static void vTaskAction(void *params)
-{
-    user_actions.setup();
-    for (;;)
-        user_actions.loop();
-}
-
 static void vTaskIO(void *params)
 {
-    io.setup();
-    xTaskCreatePinnedToCore(vTaskAction,  /* Task function */
-                            "action",     /* Task name */
-                            10000,        /* Stack size */
-                            NULL,         /* Parameters */
-                            2,            /* Priority */
-                            &task_action, /* Task handle */
-                            0             /* CPU core 0 */
-    );
     for (;;)
         io.loop();
 }
@@ -39,6 +22,8 @@ static void vTaskIO(void *params)
 static void vTaskDisplay(void *params)
 {
     display.setup();
+    io.setup();
+    user_actions.setup();
     xTaskCreatePinnedToCore(vTaskIO,  /* Task function */
                             "io",     /* Task name */
                             10000,    /* Stack size */
@@ -47,8 +32,10 @@ static void vTaskDisplay(void *params)
                             &task_io, /* Task handle */
                             1         /* CPU core 1 */
     );
-    for (;;)
+    for (;;) {
         display.loop();
+        user_actions.loop();
+    }
 }
 
 void setup(void)
