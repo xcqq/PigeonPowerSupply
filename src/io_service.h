@@ -152,5 +152,6 @@ public : io_service();
   int get_power_limit(void);
   int get_temperature_limit(void);
   int get_refresh_rate(void);
+  const char* get_language(void);
 };
 #endif

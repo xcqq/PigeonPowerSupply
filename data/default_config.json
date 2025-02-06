@@ -42,7 +42,7 @@
         },
         "language": {
             "value": "en",
-            "options": ["en", "zh"]
+            "options": ["en", "zh-cn"]
         },
         "refresh_rate": {
             "value": "high",

@@ -2,6 +2,7 @@
 #include "user_actions.h"
 #include "../../../config.h"
 #include "eez-project/styles.h"
+#include "eez-project/i18n/lv_i18n.h"
 
 const std::string ProtectLimitPage::PAGE_NAME = "protect_limit";
 
@@ -16,7 +17,7 @@ void ProtectLimitPage::onInit()
 
     JsonVariant config = io.get_config_json();
     current_limit_item =
-        new FloatSettingItem("Current Limit", config["protection_limits"]["current_limit"], io,
+        new FloatSettingItem(_("Current Limit"), config["protection_limits"]["current_limit"], io,
                              [](ConfigSettingItem<float> *item, io_service &io) {
                                  io.set_current_limit(item->getValue());
                                  LOG_INFO("Current limit updated to: %.2fA", item->getValue());
@@ -25,7 +26,7 @@ void ProtectLimitPage::onInit()
     lv_group_add_obj(protect_limit_group, current_limit_item_obj);
 
     voltage_limit_item =
-        new FloatSettingItem("Voltage Limit", config["protection_limits"]["voltage_limit"], io,
+        new FloatSettingItem(_("Voltage Limit"), config["protection_limits"]["voltage_limit"], io,
                              [](ConfigSettingItem<float> *item, io_service &io) {
                                  io.set_voltage_limit(item->getValue());
                                  LOG_INFO("Voltage limit updated to: %.2fV", item->getValue());
@@ -34,7 +35,7 @@ void ProtectLimitPage::onInit()
     lv_group_add_obj(protect_limit_group, voltage_limit_item_obj);
 
     power_limit_item = new IntSettingItem(
-        "Power Limit", config["protection_limits"]["power_limit"], io,
+        _("Power Limit"), config["protection_limits"]["power_limit"], io,
         [](ConfigSettingItem<int> *item, io_service &io) { 
             io.set_power_limit(item->getValue());
             LOG_INFO("Power limit updated to: %dW", item->getValue());
@@ -43,7 +44,7 @@ void ProtectLimitPage::onInit()
     lv_group_add_obj(protect_limit_group, power_limit_item_obj);
 
     temperature_limit_item =
-        new IntSettingItem("Temperature Limit", config["protection_limits"]["temperature_limit"],
+        new IntSettingItem(_("Temperature Limit"), config["protection_limits"]["temperature_limit"],
                            io, [](ConfigSettingItem<int> *item, io_service &io) {
                                io.set_temperature_limit(item->getValue());
                                LOG_INFO("Temperature limit updated to: %d°C", item->getValue());
@@ -76,8 +77,8 @@ void ProtectLimitPage::handle_encoder(const hmi_module_status &hmi_status)
         LOG_DEBUG("Navigating protection settings");
     } else {
         if (hmi_status.encoder_inc > 0) {
-            key = LV_KEY_UP;
-            lv_event_send(current_selected_btn, LV_EVENT_KEY, (void *)&key);
+                key = LV_KEY_UP;
+                lv_event_send(current_selected_btn, LV_EVENT_KEY, (void *)&key);
         } else {
             key = LV_KEY_DOWN;
             lv_event_send(current_selected_btn, LV_EVENT_KEY, (void *)&key);

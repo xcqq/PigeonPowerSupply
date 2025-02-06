@@ -6,6 +6,7 @@
 #include "eez-project/pages/settings/other_setting_page.h"
 #include "eez-project/pages/settings/protect_limit_page.h"
 #include "eez-project/pages/settings/root_setting_page.h"
+#include "eez-project/i18n/lv_i18n.h"
 
 void UserActions::switchToPage(const std::string &id)
 {
@@ -129,6 +130,17 @@ void UserActions::setup()
     registerPage(ProtectLimitPage::PAGE_NAME, new ProtectLimitPage(*this, io));
     registerPage(AboutPage::PAGE_NAME, new AboutPage(*this, io));
     LOG_DEBUG("All pages registered");
+
+    // init language
+    const char* language = io.get_language();
+    lv_i18n_init(lv_i18n_language_pack);
+    lv_i18n_set_locale(language);
+    LOG_INFO("Language set to: %s", language);
+
+    // init eez ui
+    ui_init();
+    extern void ui_init_input_groups();
+    ui_init_input_groups();
 
     // switch to default page
     switchToPage(HomePage::PAGE_NAME);

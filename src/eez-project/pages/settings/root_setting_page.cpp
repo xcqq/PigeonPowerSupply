@@ -5,6 +5,7 @@
 #include "./protect_limit_page.h"
 #include "eez-project/styles.h"
 #include "user_actions.h"
+#include "eez-project/i18n/lv_i18n.h"
 
 const std::string RootSettingPage::PAGE_NAME = "root_setting";
 
@@ -18,6 +19,9 @@ void RootSettingPage::onInit()
     lv_group_remove_all_objs(setting_group);
 
     // Add buttons and add them to group
+    btn_protect = lv_list_add_btn(setting_list, NULL, _("Protect Limit"));
+    btn_other = lv_list_add_btn(setting_list, NULL, _("Other Setting"));
+    btn_about = lv_list_add_btn(setting_list, NULL, _("About"));
     add_style_setting_list_button_style(btn_about);
     add_style_setting_list_button_style(btn_other);
     add_style_setting_list_button_style(btn_protect);

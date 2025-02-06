@@ -331,3 +331,7 @@ int IRAM_ATTR io_service::get_refresh_rate(void) {
         return 500;
     }
 }
+
+const char* IRAM_ATTR io_service::get_language(void) {
+    return _config_json["user_preferences"]["language"]["value"].as<const char*>();
+}

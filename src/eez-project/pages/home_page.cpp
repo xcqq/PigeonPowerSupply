@@ -2,6 +2,7 @@
 #include "settings/root_setting_page.h"
 #include "user_actions.h"
 #include "../../config.h"
+#include "eez-project/i18n/lv_i18n.h"
 
 const std::string HomePage::PAGE_NAME = "home";
 
@@ -241,17 +242,17 @@ void HomePage::handle_short_press(uint8_t keys)
             recall_list_open = false;
             lv_obj_add_flag(recall_list, LV_OBJ_FLAG_HIDDEN);
             lv_obj_t *middle_button_label = objects.middle_button_label;
-            lv_label_set_text(middle_button_label, "ON/OFF");
+            lv_label_set_text(middle_button_label, _("ON/OFF"));
             lv_obj_t *right_button_label = objects.right_button_label;
-            lv_label_set_text(right_button_label, "Menu");
+            lv_label_set_text(right_button_label, _("Menu"));
         } else {
             recall_list_open = true;
             lv_obj_clear_flag(recall_list, LV_OBJ_FLAG_HIDDEN);
             load_recall_settings_list(recall_list);
             lv_obj_t *middle_button_label = objects.middle_button_label;
-            lv_label_set_text(middle_button_label, "Del");
+            lv_label_set_text(middle_button_label, _("Del"));
             lv_obj_t *right_button_label = objects.right_button_label;
-            lv_label_set_text(right_button_label, "Clear");
+            lv_label_set_text(right_button_label, _("Clear"));
         }
         break;
 

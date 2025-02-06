@@ -3,6 +3,8 @@
 #include "user_actions.h"
 #include "../../../config.h"
 #include "eez-project/styles.h"
+#include "lvgl.h"
+#include "eez-project/i18n/lv_i18n.h"
 
 const std::string OtherSettingPage::PAGE_NAME = "other_setting";
 
@@ -18,7 +20,7 @@ void OtherSettingPage::onInit()
     lv_group_remove_all_objs(other_setting_group);
 
     beep_setting_item = new BoolSettingItem(
-        "Buzzer", config["user_preferences"]["buzzer"], io,
+        _("Buzzer"), config["user_preferences"]["buzzer"], io,
         [](ConfigSettingItem<bool> *item, io_service &io) { 
             io.set_buzzer(item->getValue());
             LOG_INFO("Buzzer %s", item->getValue() ? "enabled" : "disabled");
@@ -27,7 +29,7 @@ void OtherSettingPage::onInit()
     lv_group_add_obj(other_setting_group, btn_beep);
 
     brightness_setting_item = new IntSettingItem(
-        "Brightness", config["user_preferences"]["brightness"], io,
+        _("Brightness"), config["user_preferences"]["brightness"], io,
         [](ConfigSettingItem<int> *item, io_service &io) { 
             io.set_brightness(item->getValue());
             LOG_INFO("Brightness set to: %d", item->getValue());
@@ -36,7 +38,7 @@ void OtherSettingPage::onInit()
     lv_group_add_obj(other_setting_group, btn_brightness);
 
     refresh_rate_setting_item =
-        new ListSettingItem("Refresh Rate", config["user_preferences"]["refresh_rate"], io, 
+        new ListSettingItem(_("Refresh Rate"), config["user_preferences"]["refresh_rate"], io, 
             [](ConfigSettingItem<std::string> *item, io_service &io) {
                 LOG_INFO("Refresh rate set to: %s", item->getValue().c_str());
             });
@@ -44,9 +46,10 @@ void OtherSettingPage::onInit()
     lv_group_add_obj(other_setting_group, btn_refresh_rate);
 
     language_setting_item =
-        new ListSettingItem("Language", config["user_preferences"]["language"], io, 
+        new ListSettingItem(_("Language"), config["user_preferences"]["language"], io, 
             [](ConfigSettingItem<std::string> *item, io_service &io) {
                 LOG_INFO("Language set to: %s", item->getValue().c_str());
+                lv_i18n_set_locale(item->getValue().c_str());
             });
     lv_obj_t *btn_language = language_setting_item->render(other_setting_list);
     lv_group_add_obj(other_setting_group, btn_language);
