@@ -25,7 +25,6 @@ void HomePage::set_voltage_mode(bool is_voltage, hmi_module_settings &hmi_settin
     else
         hmi_settings.led_2 = true;
     io.set_hmi_module_status(hmi_settings);
-    io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
 void HomePage::adjust_step_size()
@@ -35,7 +34,6 @@ void HomePage::adjust_step_size()
     if (set_step > 1000) set_step = 1;
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_SET_STEP, IntegerValue(set_step));
     io.set_power_module_status(power_settings);
-    io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
 void HomePage::adjust_output(int direction)
@@ -52,14 +50,12 @@ void HomePage::adjust_output(int direction)
     }
 
     update_settings(set_volt, set_curr);
-    io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
 void HomePage::toggle_output()
 {
     power_settings.enable_flag = !power_settings.enable_flag;
     io.set_power_module_status(power_settings);
-    io.set_buzzer_beep(BUZZER_TONE_MID, BUZZER_DURATION_MID);
     io.save_config();
     LOG_INFO("Power output %s", power_settings.enable_flag ? "enabled" : "disabled");
 }
@@ -74,7 +70,6 @@ void HomePage::toggle_voltage_current_mode(hmi_module_settings &hmi_settings)
     else
         hmi_settings.led_2 = true;
     io.set_hmi_module_status(hmi_settings);
-    io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
 int HomePage::float_to_int_rounded(float value, float scale)
@@ -196,7 +191,7 @@ void HomePage::handle_long_press(uint8_t keys)
     case KEY_M5_A:
         if (!recall_list_open) {
             add_recall_setting(power_settings.set_volt, power_settings.set_curr);
-            io.set_buzzer_beep(BUZZER_TONE_MID, BUZZER_DURATION_MID);
+            io.set_buzzer_beep(BUZZER_TONE_MID, BUZZER_DURATION_LONG);
         }
         break;
     default:
@@ -211,10 +206,12 @@ void HomePage::handle_short_press(uint8_t keys)
     switch (keys) {
     case KEY_HMI_1:
         set_voltage_mode(true, hmi_settings);
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
 
     case KEY_HMI_2:
         set_voltage_mode(false, hmi_settings);
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
 
     case KEY_HMI_S:
@@ -235,6 +232,7 @@ void HomePage::handle_short_press(uint8_t keys)
         } else {
             adjust_step_size();
         }
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
 
     case KEY_M5_A:
@@ -254,6 +252,7 @@ void HomePage::handle_short_press(uint8_t keys)
             lv_obj_t *right_button_label = objects.right_button_label;
             lv_label_set_text(right_button_label, _("Clear"));
         }
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
 
     case KEY_M5_B:
@@ -266,8 +265,10 @@ void HomePage::handle_short_press(uint8_t keys)
                 io.save_config();
                 load_recall_settings_list(recall_list);
             }
+            io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         } else {
             toggle_output();
+            io.set_buzzer_beep(BUZZER_TONE_MID, BUZZER_DURATION_MID);
         }
         break;
 
@@ -279,6 +280,7 @@ void HomePage::handle_short_press(uint8_t keys)
         } else {
             user_actions.switchToPage(RootSettingPage::PAGE_NAME);
         }
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
     }
 }

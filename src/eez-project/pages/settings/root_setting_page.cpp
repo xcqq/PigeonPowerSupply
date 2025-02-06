@@ -71,9 +71,13 @@ void RootSettingPage::handle_encoder(const hmi_module_status &hmi_status)
     if (!hmi_status.encoder_inc) return;
 
     if (hmi_status.encoder_inc < 0)
-        lv_group_focus_next(setting_group);
+        for (int i = 0; i < -hmi_status.encoder_inc; i++) {
+            lv_group_focus_next(setting_group);
+        }
     else
-        lv_group_focus_prev(setting_group);
+        for (int i = 0; i < hmi_status.encoder_inc; i++) {
+            lv_group_focus_prev(setting_group);
+        }
     io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
@@ -87,14 +91,15 @@ void RootSettingPage::handle_short_press(uint8_t keys)
         if (focused_obj) {
             lv_group_send_data(setting_group, LV_KEY_ENTER);
         }
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
     case KEY_M5_A:
         user_actions.goBack();
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
     default:
         break;
     }
-    io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
 void RootSettingPage::update() {}

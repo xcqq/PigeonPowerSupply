@@ -15,8 +15,8 @@ void AboutPage::handle_short_press(uint8_t keys)
 {
     if (keys == KEY_M5_A) {
         user_actions.goBack();
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
     }
-    io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
 }
 
 void AboutPage::update() {}

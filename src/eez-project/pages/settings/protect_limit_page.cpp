@@ -111,6 +111,7 @@ void ProtectLimitPage::handle_short_press(uint8_t keys)
                 }
             }
         }
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
     case KEY_M5_A:
         if (current_selected_btn) {
@@ -119,6 +120,7 @@ void ProtectLimitPage::handle_short_press(uint8_t keys)
         } else {
             user_actions.goBack();
         }
+        io.set_buzzer_beep(BUZZER_TONE_HIGH, BUZZER_DURATION_SHORT);
         break;
     default:
         break;
