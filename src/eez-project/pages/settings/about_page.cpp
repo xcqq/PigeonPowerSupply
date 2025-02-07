@@ -9,6 +9,7 @@ void AboutPage::onInit()
 {
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_VERSION, StringValue(VERSION));
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_COMPILE_DATE, StringValue(COMPILE_DATE));
+    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_GIT_HASH, StringValue(GIT_HASH));
 }
 
 void AboutPage::handle_short_press(uint8_t keys)
