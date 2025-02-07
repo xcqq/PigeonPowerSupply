@@ -61,6 +61,8 @@ static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"Other Setting", "其他设置"},
     {"Del", "删除"},
     {"Clear", "清空"},
+    {"Version", "版本"},
+    {"Compile date", "编译时间"},
     {NULL, NULL} // End mark
 };
 
