@@ -11,7 +11,13 @@ void IRAM_ATTR io_service::power_module_sync(void) {
     _power_module_status.set_volt = _pps.getOutputVoltage();
     _power_module_status.set_curr = _pps.getOutputCurrent();
     _power_module_status.out_volt = _pps.getReadbackVoltage();
+    if (_power_module_status.out_volt < 0.0) {
+        _power_module_status.out_volt = 0.0;
+    }
     _power_module_status.out_curr = _pps.getReadbackCurrent();
+    if (_power_module_status.out_curr < 0.0) {
+        _power_module_status.out_curr = 0.0;
+    }
     _power_module_status.cc_cv_flag = _pps.getMode();
     _power_module_status.enable_flag = _pps.getPowerEnable();
     _power_module_status.temperature = _pps.getTemperature();
