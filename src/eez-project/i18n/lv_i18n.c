@@ -63,6 +63,7 @@ static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"Clear", "清空"},
     {"Version", "版本"},
     {"Compile date", "编译时间"},
+    {"POWER", "功率"},
     {NULL, NULL} // End mark
 };
 
