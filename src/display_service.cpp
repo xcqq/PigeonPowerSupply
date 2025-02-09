@@ -65,6 +65,9 @@ void ICACHE_FLASH_ATTR display_service::lv_setup()
     tft.invertDisplay(1);
     tft.setRotation(ROTATION); /* Landscape orientation */
     tft.initDMA();
+    ledcSetup(7, 44100, 8);
+    ledcAttachPin(TFT_BL, 7);
+    ledcWrite(7, 80);
 
     LOG_DEBUG("LCD initialized with rotation: %d", ROTATION);
 

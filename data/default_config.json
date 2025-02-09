@@ -35,7 +35,7 @@
     "user_preferences": {
         "buzzer": false,
         "brightness": {
-            "min": 0,
+            "min": 1,
             "max": 10,
             "value": 10,
             "step": 1

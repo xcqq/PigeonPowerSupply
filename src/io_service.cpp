@@ -305,7 +305,7 @@ JsonDocument& io_service::get_config_json(void) {
 }
 
 void IRAM_ATTR io_service::set_brightness(int brightness) {
-    M5.Lcd.setBrightness((uint8_t)(brightness * 255 / 10));
+    ledcWrite(7, (uint8_t)(brightness * 255 / 10));
 }
 
 void IRAM_ATTR io_service::set_buzzer(bool buzzer) {
